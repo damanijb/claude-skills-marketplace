@@ -1,7 +1,6 @@
 ---
 name: report-writer
 description: This skill should be used when the user asks to "write report", "generate DOCX", "credit report", "investment memo", "format report", "SBC Treasury style report", "write up analysis", "generate credit write-up", "create investment document", "compile analysis into report", or needs to assemble a formatted DOCX document from financial analysis data with SBC Treasury branding, charts, and infographics.
-version: 0.1.0
 ---
 
 # Report Writer

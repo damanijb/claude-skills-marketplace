@@ -1,7 +1,6 @@
 ---
 name: chart-generator
 description: This skill should be used when the user asks to "create chart", "D3 chart", "generate visualization", "interactive chart", "financial chart", "chart for report", "bar chart for CET1", "ROE trend chart", "peer comparison chart", "waterfall chart", "credit scorecard radar", or needs to generate D3.js charts for embedding in financial reports.
-version: 0.1.0
 ---
 
 # Chart Generator

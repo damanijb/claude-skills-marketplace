@@ -1,7 +1,6 @@
 ---
 name: credential-manager
 description: This skill should be used when the user asks to "set up credentials", "configure API keys", "authenticate research providers", "credential setup", "configure 1Password for research", "set up .env for research providers", or needs to resolve login credentials for JPM Research, CapitalIQ, FitchRatings, CreditSights, or Morgan Stanley Research platforms.
-version: 0.1.0
 ---
 
 # Credential Manager

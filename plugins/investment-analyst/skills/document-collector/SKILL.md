@@ -1,7 +1,6 @@
 ---
 name: document-collector
 description: This skill should be used when the user asks to "collect documents", "gather filings", "get earnings call", "download annual report", "get SEC filing", "collect investor relations documents", "get 10-K", "get 20-F", "get Pillar 3 disclosure", "gather news articles", or needs to download and process financial documents from public sources including investor relations pages, SEC EDGAR, European regulators, earnings call transcripts, and financial news.
-version: 0.1.0
 ---
 
 # Document Collector

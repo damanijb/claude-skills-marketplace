@@ -1,6 +1,8 @@
 {
   "name": "investment-analyst",
-  "version": "0.1.0",
-  "description": "Comprehensive investment analysis pipeline — automates research provider access, document collection, fundamental analysis, financial modeling, and report generation for credit and equity research.",
-  "author": "djb"
+  "description": "End-to-end investment credit analysis pipeline. Automates research provider access (JPM, CapitalIQ, Fitch, CreditSights, Morgan Stanley), document collection, fundamental research with FRED macro data, 7-sheet Excel financial models with credit scoring, D3 charts, nano-banana infographics, and DOCX report generation with SBC Treasury branding.",
+  "author": {
+    "name": "damanijb",
+    "url": "https://github.com/damanijb"
+  }
 }

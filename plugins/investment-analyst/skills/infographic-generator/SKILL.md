@@ -1,7 +1,6 @@
 ---
 name: infographic-generator
 description: This skill should be used when the user asks to "create infographic", "generate infographic", "visual summary", "nano-banana infographic", "executive summary visual", "risk dashboard image", "create visual for report", or needs to generate AI-powered infographic images for embedding in financial reports using nano-banana.
-version: 0.1.0
 ---
 
 # Infographic Generator

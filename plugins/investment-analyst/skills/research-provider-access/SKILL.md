@@ -1,7 +1,6 @@
 ---
 name: research-provider-access
 description: This skill should be used when the user asks to "access JPM Research", "pull from CapitalIQ", "get Fitch rating", "download CreditSights report", "Morgan Stanley research", "pull research from providers", "scrape research platform", "get credit research", "login to research portal", or needs to extract financial data, credit ratings, or research reports from gated research platforms using Chrome browser automation.
-version: 0.1.0
 ---
 
 # Research Provider Access
