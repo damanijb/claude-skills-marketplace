@@ -24,6 +24,14 @@
       "version": "1.0.0",
       "category": "data visualization",
       "keywords": ["d3", "charts", "data-visualization", "svg", "interactive", "finance", "dashboards"]
+    },
+    {
+      "name": "investment-analyst",
+      "source": "./plugins/investment-analyst",
+      "description": "End-to-end investment credit analysis pipeline. Automates research provider access (JPM, CapitalIQ, Fitch, CreditSights, Morgan Stanley), document collection, fundamental research with FRED macro data, 7-sheet Excel financial models with credit scoring, D3 charts, nano-banana infographics, and DOCX report generation with SBC Treasury branding.",
+      "version": "0.1.0",
+      "category": "finance",
+      "keywords": ["credit-analysis", "investment-research", "financial-modeling", "excel", "docx", "d3-charts", "infographics", "chrome-automation", "bank-analysis", "credit-scoring"]
     }
   ]
 }
