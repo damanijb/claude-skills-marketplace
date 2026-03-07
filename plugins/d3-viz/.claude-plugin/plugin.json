@@ -1,0 +1,8 @@
+{
+  "name": "d3-viz",
+  "description": "Interactive data visualizations using D3.js v7. Comprehensive skill for creating charts, graphs, network diagrams, and geographic visualizations with fine-grained control over SVG elements, transitions, and interactions.",
+  "author": {
+    "name": "damanijb",
+    "url": "https://github.com/damanijb"
+  }
+}

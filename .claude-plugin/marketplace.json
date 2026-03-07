@@ -1,0 +1,29 @@
+{
+  "name": "claude-skills-marketplace",
+  "owner": {
+    "name": "damanijb",
+    "url": "https://github.com/damanijb"
+  },
+  "metadata": {
+    "description": "Custom Claude Code skills for finance, data visualization, and AI image generation. Tuned for investment research and enterprise-grade output.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "nano-banana",
+      "source": "./plugins/nano-banana",
+      "description": "AI image generation using Gemini 3.1 Flash, tuned for finance and investment research. Produces enterprise-grade infographics with white backgrounds, restrained typography, and clean minimalist aesthetics suitable for research PDFs and board presentations.",
+      "version": "3.0.0",
+      "category": "creative tools",
+      "keywords": ["image-generation", "infographics", "finance", "investment-research", "gemini", "data-visualization"]
+    },
+    {
+      "name": "d3-viz",
+      "source": "./plugins/d3-viz",
+      "description": "Interactive data visualizations using D3.js v7. Comprehensive skill for creating charts, graphs, network diagrams, and geographic visualizations with fine-grained control over SVG elements, transitions, and interactions.",
+      "version": "1.0.0",
+      "category": "data visualization",
+      "keywords": ["d3", "charts", "data-visualization", "svg", "interactive", "finance", "dashboards"]
+    }
+  ]
+}
