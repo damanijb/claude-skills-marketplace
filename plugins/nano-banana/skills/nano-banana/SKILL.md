@@ -1,11 +1,15 @@
 ---
 name: nano-banana
-description: "Generate stunning, production-quality images, visualizations, infographics, and SVG-style graphics using Google's Nano Banana 2 (Gemini 3.1 Flash Image Preview) API. Use this skill whenever the user wants to create charts, data visualizations, diagrams, presentation graphics, slide backgrounds, icons, infographics, poster art, or any visual asset for documents, decks, or dashboards. Also trigger for requests like generate an image of, create a visual for, make a chart image, design a graphic, build an infographic, add visuals to my slides, create SVG-style art, generate slide backgrounds, or any request to produce AI-generated imagery for professional use."
+description: "Generate stunning, production-quality images, visualizations, infographics, and SVG-style graphics using Google's Nano Banana 2 (Gemini 3.1 Flash Image Preview) API. Supports two distinct aesthetics: (1) Enterprise/research style — clean white backgrounds, restrained typography for J.P. Morgan-grade board packets and research PDFs, and (2) Visual Capitalist editorial style — bold dark backgrounds, vibrant colors, proportional data shapes (treemaps, pyramids, Sankeys, hex grids, bubble charts, choropleths, bar rankings, stacked comparisons, scale visuals, and timeline arcs) for engaging, shareable data journalism. Use this skill whenever the user wants to create charts, data visualizations, diagrams, presentation graphics, slide backgrounds, icons, infographics, poster art, or any visual asset for documents, decks, or dashboards. Also trigger for requests like generate an image of, create a visual for, make a chart image, design a graphic, build an infographic, Visual Capitalist style, editorial infographic, data visualization, bold infographic, or any request to produce AI-generated imagery for professional use."
 ---
 
 # Nano Banana 2 — Visual Generation Skill
 
 Nano Banana 2 is Google's Gemini 3.1 Flash Image Preview model — combining Pro-level intelligence with Flash speed. It supports resolutions up to 4K, follows instructions precisely, and excels at data visualizations, infographics, and presentation-ready graphics.
+
+This skill supports two distinct visual aesthetics:
+- **Enterprise Research** (Templates 1-5): Clean white backgrounds, restrained palette, suitable for board packets, research PDFs, and formal presentations. Think J.P. Morgan / Morgan Stanley.
+- **Visual Capitalist Editorial** (Templates 6-15): Bold dark backgrounds, vibrant saturated colors, proportional data shapes, oversized hero numbers. Think Visual Capitalist, Statista, or shareable data journalism. Includes treemaps, pyramids, Sankey flows, hex grids, bubble charts, choropleths, bar rankings, stacked comparisons, scale visuals, and timeline arcs.
 
 ## Setup
 
@@ -295,7 +299,363 @@ No colored fills on headers. No thick borders. Just thin lines
 and color-coded text values.
 ```
 
-## Workflow for Creating Multiple Infographics
+## Visual Capitalist Style — Bold Editorial Infographics
+
+When the user wants **engaging, shareable, visually striking** infographics — the kind you'd see on Visual Capitalist, Statista, or social media data visualizations — switch from the restrained enterprise aesthetic to this bold editorial style.
+
+**When to use this style:**
+- User says "infographic," "visual capitalist style," "make it bold," "editorial," "social media visual," "data art," or "engaging"
+- Content is for public consumption, social sharing, newsletters, or blog posts
+- The goal is to make data visually memorable, not just readable
+- User wants something that looks like a professional data journalism piece
+
+**When to keep enterprise style instead:**
+- Board presentations, regulatory filings, internal memos
+- User says "clean," "professional," "J.P. Morgan style," "restrained," "for print"
+- Content goes into Word docs, PDFs, or formal PowerPoint decks
+
+### The Visual Capitalist Aesthetic
+
+The opposite of enterprise restraint — this style makes data **the spectacle**. Key DNA:
+
+1. **Dark backgrounds dominate.** Deep navy (#0a0e27), near-black (#111827), or rich dark teal (#0c2340). This creates drama and makes colors pop. Alternatively, warm cream/beige (#f5f0e8) for a lighter editorial feel.
+
+2. **Bold, oversized typography.** Titles in ALL CAPS, heavyweight sans-serif. Hero numbers displayed HUGE ($4.8T, 90.8%, 152). Typography IS the design — not decoration on top of design.
+
+3. **Saturated accent colors.** Use 4-6 vibrant colors, not the 2-3 muted tones of enterprise. Teal (#00d4aa), electric blue (#3b82f6), warm amber (#f59e0b), vivid red (#ef4444), purple (#8b5cf6), lime green (#84cc16). Colors should be sector/category-coded.
+
+4. **Data as physical metaphor.** Don't just chart the data — embody it. Values become proportional shapes (hexagons, rectangles, circles, pyramids). The visual shape itself communicates the story before you read any text.
+
+5. **Logos, flags, and icons as visual anchors.** Instead of just text labels, reference real-world brand logos, country flags, or category icons to make the graphic immediately scannable.
+
+6. **Source attribution and branding.** Always include a source line at the bottom ("Source: [name]") and a subtle creator/brand mark.
+
+### Prompt Construction for Visual Capitalist Style
+
+Build every editorial infographic prompt in this order:
+
+1. **Background and mood first.** Start with: "On a deep dark navy background (#0a0e27), create a bold, visually striking infographic..."
+
+2. **Title treatment.** "Title in large ALL CAPS white text: '[TITLE]'. Year or date badge in top-right corner."
+
+3. **Layout metaphor.** Describe the specific visualization type (treemap, pyramid, flow diagram, bubble chart, etc.) and how data maps to visual properties (size, color, position).
+
+4. **Data elements.** Specify exact values, labels, and categories with their assigned colors.
+
+5. **Style anchor.** End with this block:
+
+```
+Style: Bold editorial data visualization in the style of Visual Capitalist
+or Statista infographics. Dark background with vibrant, saturated colors.
+Large bold sans-serif typography — title in ALL CAPS white. Hero numbers
+displayed prominently. Data encoded as proportional shapes (not just charts).
+Clean but dramatic — professional data journalism, not decorative clip art.
+Include a thin source attribution line at the bottom.
+```
+
+### Editorial Infographic Templates
+
+#### 6. Treemap / Proportional Grid (best for: market cap rankings, budget breakdowns, sector composition)
+
+Visual Capitalist's signature — proportional rectangles sized by value, color-coded by category, with entity names and values inside each cell.
+
+```
+On a deep dark navy background (#0a0e27), create a bold proportional treemap
+infographic titled "[TITLE]" in large ALL CAPS white text.
+
+Layout: A grid of rectangles where each rectangle's area is proportional
+to its value. Rectangles are packed tightly with thin dark borders between them.
+
+Color-code by category:
+- [Category 1]: teal (#00d4aa) — [Entity: $Value], [Entity: $Value]...
+- [Category 2]: blue (#3b82f6) — [Entity: $Value], [Entity: $Value]...
+- [Category 3]: amber (#f59e0b) — [Entity: $Value]...
+- [Category 4]: purple (#8b5cf6) — [Entity: $Value]...
+
+Inside each rectangle: entity name in bold white text, value below in
+slightly smaller white text. Largest entities get the largest rectangles.
+
+Category labels run vertically along the right edge of each color section.
+Bottom: source line in small gray text.
+
+Style: Bold editorial data visualization like Visual Capitalist. Dark background,
+vibrant saturated sector colors, proportional rectangles, clean bold typography.
+```
+
+#### 7. Pyramid / Histogram Tower (best for: distribution of returns, frequency by range, historical data by bucket)
+
+Color-gradient horizontal bars stacked in a pyramid shape — widest at the most common range, narrowing at extremes.
+
+```
+On a deep dark background (#111827), create a bold pyramid chart infographic
+titled "[TITLE]" in large ALL CAPS white text at the top-left.
+
+Layout: Horizontal bars stacked vertically, centered, forming a pyramid
+shape. Each bar represents a range bucket. The widest bars are in the
+middle (most common range), narrowing toward top (high extremes) and
+bottom (low extremes). Each bar is divided into cells, one per data point.
+
+Color gradient from top to bottom:
+- Top rows (highest values): bright green (#22c55e)
+- Upper-middle rows: teal (#14b8a6)
+- Middle rows: cyan (#06b6d4)
+- Lower-middle rows: amber (#f59e0b) to orange (#f97316)
+- Bottom rows (lowest/negative values): red (#ef4444) to deep red (#991b1b)
+
+Inside each cell: the year or label in bold text (white or dark depending
+on background color for contrast).
+
+X-axis at bottom showing the range scale (e.g., -50% to +50%).
+Optional callout quote in the left margin area.
+
+Style: Bold data visualization like Visual Capitalist's S&P 500 returns pyramid.
+Dark background, vibrant color gradient, each cell clearly labeled.
+```
+
+#### 8. Sankey / Alluvial Flow (best for: trade flows, money flows, migration, supply chains)
+
+Flow lines connecting origins to destinations, with width proportional to volume.
+
+```
+On a warm cream background (#f5f0e8), create a professional Sankey flow
+diagram infographic titled "[TITLE]" in large dark text.
+
+Layout: Left column shows origins with [flag/icon] and percentage labels.
+Right column shows destinations with [flag/icon] and percentage labels.
+Curved flow bands connect left to right, with bandwidth proportional to
+flow volume. Flows pass through a central channel or bottleneck.
+
+Origins (left side):
+- [Entity 1]: [X]% — [color 1]
+- [Entity 2]: [X]% — [color 2]
+...
+
+Destinations (right side):
+- [Entity A]: [X]% — [color A]
+- [Entity B]: [X]% — [color B]
+...
+
+Center: Total flow value displayed prominently (e.g., "Total: 14.2 mb/d").
+Each flow band uses the origin's color with slight transparency.
+
+Annotation boxes with brief context (1-2 sentences max).
+Bottom: source attribution line.
+
+Style: Warm editorial Sankey diagram like Visual Capitalist. Cream or light
+tan background, proportional flow widths, small flag icons next to country names,
+clean serif or sans-serif typography.
+```
+
+#### 9. Hexagonal Tile Grid (best for: brand rankings, entity comparisons with logos, top-N lists)
+
+Honeycomb layout where each hexagon represents an entity, sized by value, with logo and metric inside.
+
+```
+On a deep dark navy background (#0a0e27), create a bold hexagonal tile
+infographic titled "[TITLE]" in large ALL CAPS white text.
+
+Layout: Honeycomb grid of hexagons. Each hexagon represents one entity.
+Hexagon SIZE is proportional to value. Color-coded by region or category.
+
+Hexagons (largest to smallest):
+- [Entity 1]: $[Value] — large hex, [color 1] (#00d4aa)
+- [Entity 2]: $[Value] — large hex, [color 1]
+- [Entity 3]: $[Value] — medium hex, [color 2] (#3b82f6)
+...
+
+Inside each hexagon: rank number (small, top), entity name (bold, center),
+value (below name).
+
+Color legend:
+- [Category 1]: teal
+- [Category 2]: blue
+- [Category 3]: red/coral for different region
+
+Style: Bold hexagonal data visualization like Visual Capitalist's brand
+rankings. Dark background, vibrant hex colors, clean white text inside each tile.
+```
+
+#### 10. Choropleth / Heat Map (best for: geographic data, state/country comparisons, regional metrics)
+
+Map with gradient fill coloring by value, with labels on each region.
+
+```
+On a clean light background (#f8f9fa), create a choropleth map infographic
+titled "[TITLE]" in large bold dark text.
+
+Layout: [Map type — US states / World / Europe / etc.] with each region
+colored on a gradient scale from [light color] (low values) to [dark color]
+(high values).
+
+Gradient scale:
+- Low: light pink (#fce7f3) or light blue (#dbeafe)
+- Medium: medium (#f472b6) or (#60a5fa)
+- High: dark (#be185d) or (#1d4ed8)
+
+Labels: Show the primary metric value on or next to each region.
+A horizontal gradient legend bar at the top shows the scale range
+(e.g., "$320K ←→ $485K").
+
+Callout: "National Average: [value]" in a subtle badge.
+Bottom: source line.
+
+Style: Clean editorial choropleth like Visual Capitalist's mapped series.
+Light background, clear gradient progression, readable value labels on
+each region. Professional data journalism aesthetic.
+```
+
+#### 11. Bubble / Circle Pack (best for: proportional comparisons, entity sizes, market share)
+
+Proportional circles arranged by size, with flag/logo icons and labels.
+
+```
+On a dark gradient background (deep purple #1e1b4b to navy #0f172a),
+create a bold bubble chart infographic titled "[TITLE]" in large ALL CAPS
+white text.
+
+Layout: Circles arranged with largest in center/prominent position,
+smaller circles surrounding it. Each circle's AREA is proportional to
+its value.
+
+Circles:
+- [Entity 1]: [Value] — largest circle, [color 1]
+- [Entity 2]: [Value] — second largest, [color 2]
+- [Entity 3]: [Value] — medium, [color 3]
+...
+
+Inside each circle: [flag icon or emoji], entity name in bold white,
+value below. Smallest circles may show just the name and value.
+
+Style: Bold proportional bubble visualization like Visual Capitalist.
+Dark gradient background, vibrant saturated circle colors, clean white
+typography inside each bubble. Professional data journalism.
+```
+
+#### 12. Horizontal Bar Race / Ranking (best for: country rankings, metric comparisons with flags)
+
+Horizontal bars with flag icons, sorted by value, with dual-metric columns.
+
+```
+On a deep dark background (#111827), create a bold horizontal bar ranking
+infographic titled "[TITLE]" in large ALL CAPS white text. Subtitle or
+date range below in smaller gray text.
+
+Layout: Horizontal bars sorted from longest (top) to shortest (bottom).
+Each bar has:
+- [Flag icon/emoji] and entity name (left-aligned, white text)
+- Colored bar extending rightward, length proportional to value
+- Value label at the end of the bar
+
+Optional: Two metric columns (left column: primary metric with bars,
+right column: secondary metric as text values).
+
+Bars colored by category or on a gradient:
+- Top performers: green (#22c55e) or teal (#14b8a6)
+- Middle: blue (#3b82f6) or amber (#f59e0b)
+- Bottom: orange (#f97316) or gray (#6b7280)
+
+Style: Bold editorial bar ranking like Visual Capitalist's "Ranked" series.
+Dark background, vibrant bar colors, flag icons, clean bold white typography.
+```
+
+#### 13. Stacked Bar Comparison (best for: debt composition, revenue breakdown, portfolio allocation)
+
+Horizontal stacked bars showing component breakdown for each entity.
+
+```
+On a deep dark background (#0a0e27), create a bold stacked bar comparison
+infographic titled "[TITLE]" in large ALL CAPS white text.
+
+Layout: Each row is one entity. The full bar represents 100% (or total value).
+Segments within each bar are color-coded by component.
+
+Components (color legend at top):
+- [Component A]: red (#ef4444)
+- [Component B]: orange (#f97316)
+- [Component C]: amber (#f59e0b)
+
+Entities (top to bottom):
+- [Entity 1]: [A]% + [B]% + [C]% = [Total]%
+- [Entity 2]: [A]% + [B]% + [C]% = [Total]%
+...
+
+Entity names and flags on the left. Total value on the right of each bar.
+Percentage labels inside each segment if wide enough.
+
+Style: Bold editorial stacked bar chart like Visual Capitalist's debt burden
+visualizations. Dark background, warm red-to-amber color scheme, clean
+white labels.
+```
+
+#### 14. Scale / "How Massive Is X" Comparison (best for: putting large numbers in context, entity vs. benchmark)
+
+Shows one entity compared to others for dramatic scale context.
+
+```
+On a dark background (#111827) with subtle [green/blue/teal] accent color,
+create a bold scale comparison infographic titled "How [Massive/Large] Is
+[ENTITY]" in large ALL CAPS white text.
+
+Layout: Central hero metric displayed HUGE: "$[X.X]T" or "[X]B" in the
+entity's brand color. Entity name in bold below.
+
+Surrounding the hero: comparison entities arranged in a descending arc or
+column, each showing:
+- [Flag/icon] [Name]: $[Value]
+
+Callout text: "[Entity]'s valuation would rank it as the world's
+[Nth]-largest [economy/company/etc.]"
+
+Style: Bold dramatic scale comparison like Visual Capitalist. Dark background,
+one dominant accent color for the hero entity, comparison values in white text.
+The hero number should be the visual centerpiece — 3-5x larger than any
+other text on the graphic.
+```
+
+#### 15. Timeline / Growth Arc (best for: historical growth, investment returns over time, milestone tracking)
+
+Multi-colored lines or area fills showing growth trajectories with icon legends.
+
+```
+On a clean light background (#fafafa), create an editorial growth chart
+infographic titled "[TITLE]" in large bold dark text. Subtitle: "[context]".
+
+TOP ROW: Icon legend — small colored circles with labels for each series:
+- [Series 1]: [color 1] (#ef4444)
+- [Series 2]: [color 2] (#f59e0b)
+- [Series 3]: [color 3] (#3b82f6)
+...
+
+MAIN AREA: Line chart or area chart showing growth of each series over
+the time period. Lines should be thick (3-4px) and clearly distinguishable.
+Key inflection points labeled with year and value.
+
+Starting point anchored at left (e.g., "$100 invested in [YEAR]").
+Ending values labeled at right terminus of each line.
+
+X-axis: years. Y-axis: values (log scale if range is very large).
+
+Style: Clean editorial growth visualization like Visual Capitalist's
+asset class returns. Light background, vibrant distinct line colors,
+icon legend row, clean axis labels. Professional data journalism.
+```
+
+### Combining Styles — Hybrid Approach
+
+For maximum impact, you can combine enterprise clarity with editorial drama:
+
+- **Dark bg + restrained data**: Use a dark background but keep the data presentation clean and uncluttered. Good for executive dashboards that need to look impressive on screens.
+- **Light bg + bold typography**: Keep the white/cream background but use Visual Capitalist's bold ALL CAPS titles and hero numbers. Good for reports that need to feel modern but remain printable.
+- **Data section + context section**: Use a bold editorial chart as the main visual, with a clean enterprise-style "Key Takeaways" bullet section below it.
+
+### Aspect Ratio Guide for Editorial Infographics
+
+- `9:16` or `3:4` — **Vertical / social-first**: Best for tall infographics (treemaps, rankings, timelines). Instagram stories, LinkedIn posts.
+- `16:9` — **Widescreen / presentation**: Best for flow diagrams, comparison bars, scale visuals. Slides and blog headers.
+- `1:1` — **Square / social tile**: Best for single-stat callouts, bubble charts, hex grids. Instagram posts, dashboard tiles.
+- `4:5` — **Near-square portrait**: Best for choropleth maps and multi-section infographics. Facebook, presentation inserts.
+
+
 
 When generating a set of related visuals (e.g., for a research report):
 
