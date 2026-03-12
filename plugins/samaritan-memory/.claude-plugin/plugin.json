@@ -1,0 +1,11 @@
+{
+  "name": "samaritan-memory",
+  "version": "1.0.0",
+  "description": "Hybrid memory system combining Qdrant semantic vector search with Neo4j knowledge graph, powered by Qwen3-VL embeddings. Provides recall, search, ingest, book ingestion, graph queries, and memory stats via MCP tools.",
+  "author": {
+    "name": "damanijb",
+    "url": "https://github.com/damanijb"
+  },
+  "repository": "https://github.com/damanijb/claude-skills-marketplace",
+  "keywords": ["memory", "rag", "qdrant", "neo4j", "embeddings", "knowledge-graph", "semantic-search"]
+}

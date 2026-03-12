@@ -26,6 +26,14 @@
       "keywords": ["d3", "charts", "data-visualization", "svg", "interactive", "finance", "dashboards"]
     },
     {
+      "name": "samaritan-memory",
+      "source": "./plugins/samaritan-memory",
+      "description": "Hybrid memory system combining Qdrant semantic vector search with Neo4j knowledge graph, powered by Qwen3-VL embeddings and reranking. Skills for recall, search, ingest, book ingestion, graph queries, and system diagnostics.",
+      "version": "1.0.0",
+      "category": "memory",
+      "keywords": ["memory", "rag", "qdrant", "neo4j", "embeddings", "knowledge-graph", "semantic-search", "qwen3-vl"]
+    },
+    {
       "name": "investment-analyst",
       "source": "./plugins/investment-analyst",
       "description": "End-to-end investment credit analysis pipeline. Automates research provider access (JPM, CapitalIQ, Fitch, CreditSights, Morgan Stanley), document collection, fundamental research with FRED macro data, 7-sheet Excel financial models with credit scoring, D3 charts, nano-banana infographics, and DOCX report generation with SBC Treasury branding.",
