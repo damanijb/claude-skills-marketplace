@@ -1,0 +1,29 @@
+{
+  "description": "Samaritan memory hooks: nudge recording after significant work, block stop if unrecorded",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|Bash",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "A tool just completed (Write, Edit, or Bash). Evaluate whether the action produced a significant outcome worth recording to samaritan-memory. Significant outcomes include: decisions made, architecture changes, new files/services created, config changes, deployments, migrations, bug fixes, or new knowledge gained. Trivial actions (reading files, listing directories, checking status, formatting) should NOT be recorded. If significant: return a systemMessage reminding to call memory_add() or record() with the appropriate memory_type (decision, event, insight, preference, task) and entities/facts if applicable. If trivial: return nothing. Do NOT record the same thing twice in one session — if a similar memory was already stored, skip it.",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "The agent is about to stop. Review the conversation: were any significant decisions, events, insights, or preferences generated during this session? If YES and they were NOT stored via memory_add() or record() calls, return decision 'block' with reason 'Unrecorded work detected — store key outcomes to samaritan-memory before completing.' List what should be recorded. If all significant work was recorded (or no significant work occurred), return decision 'approve'.",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
