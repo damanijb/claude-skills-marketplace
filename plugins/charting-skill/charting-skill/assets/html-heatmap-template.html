@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heatmap Scorecard Template</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; padding: 2rem; }
+h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+p.sub { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
+.table-wrap { max-width: 860px; overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: center; padding: 10px 8px; font-weight: 500; color: #555; border-bottom: 1px solid #e0e0e0; white-space: nowrap; }
+th:first-child { text-align: left; min-width: 120px; }
+th.composite-col { border-left: 2px solid #ccc; }
+td { text-align: center; padding: 10px 8px; font-weight: 500; font-size: 13px; }
+td:first-child { text-align: left; font-weight: 600; color: #1a1a1a; font-size: 13px; background: #fff !important; }
+td.composite-cell { border-left: 2px solid #ccc; font-weight: 700; font-size: 14px; }
+tr { border-bottom: 1px solid #f0f0f0; }
+tr:last-child { border-bottom: 1px solid #e0e0e0; }
+.rank { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #e8e8e8; font-size: 11px; font-weight: 600; line-height: 20px; text-align: center; color: #555; margin-right: 8px; vertical-align: middle; }
+.legend-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 1.5rem; font-size: 12px; color: #888; }
+</style>
+</head>
+<body>
+<h2>Scorecard title (0–10 scale)</h2>
+<p class="sub">Assessment description. Sorted by composite.</p>
+<div class="legend-bar">
+  <span>Weaker</span>
+  <canvas id="gradBar" width="200" height="12" style="border-radius: 6px;"></canvas>
+  <span>Stronger</span>
+</div>
+<div class="table-wrap">
+  <table id="scoreTable"></table>
+</div>
+<script>
+// === DATA ===
+// Dimensions (column headers)
+const dims = ['Metric A','Metric B','Metric C','Metric D','Metric E','Metric F'];
+
+// Entities sorted by composite (descending)
+const entities = [
+  { name: 'Entity 1', scores: [7.6, 9.6, 8.5, 6.0, 8.5, 8.0], composite: 8.0 },
+  { name: 'Entity 2', scores: [7.8, 10.0, 8.0, 5.6, 6.7, 8.3], composite: 7.7 },
+  { name: 'Entity 3', scores: [4.5, 10.0, 8.0, 7.2, 4.5, 7.3], composite: 6.9 },
+  { name: 'Entity 4', scores: [2.5, 5.0, 5.5, 3.8, 1.1, 1.0], composite: 3.2 },
+];
+
+// === COLOR FUNCTIONS ===
+// Cell color: red-to-green gradient based on score (0-10)
+function scoreColor(v) {
+  const t = Math.max(0, Math.min(10, v)) / 10;
+  if (t < 0.5) {
+    const p = t / 0.5;
+    const r = Math.round(198 + (240 - 198) * (1 - p));
+    const g = Math.round(68 + (200 - 68) * p);
+    const b = Math.round(48 + (120 - 48) * p);
+    return { bg: `rgba(${r},${g},${b},0.18)`, text: `rgb(${r-40},${g-30},${b-20})` };
+  } else {
+    const p = (t - 0.5) / 0.5;
+    const r = Math.round(100 - 60 * p);
+    const g = Math.round(160 + 30 * p);
+    const b = Math.round(100 - 20 * p);
+    return { bg: `rgba(${r},${g},${b},0.2)`, text: `rgb(${Math.max(0,r-40)},${Math.max(0,g-50)},${Math.max(0,b-30)})` };
+  }
+}
+
+// Composite column: three-tier coloring
+function compositeColor(v) {
+  if (v >= 7.0) return { bg: '#e6f4ea', text: '#1a6e3a' };
+  if (v >= 5.0) return { bg: '#fff8e1', text: '#8a6d00' };
+  return { bg: '#fce8e6', text: '#a33030' };
+}
+
+// === GRADIENT BAR ===
+const gradCtx = document.getElementById('gradBar').getContext('2d');
+const grad = gradCtx.createLinearGradient(0, 0, 200, 0);
+grad.addColorStop(0, 'rgba(198,68,48,0.45)');
+grad.addColorStop(0.5, 'rgba(240,200,120,0.45)');
+grad.addColorStop(1, 'rgba(40,140,80,0.45)');
+gradCtx.fillStyle = grad;
+gradCtx.beginPath();
+gradCtx.roundRect(0, 0, 200, 12, 6);
+gradCtx.fill();
+
+// === BUILD TABLE ===
+const table = document.getElementById('scoreTable');
+let html = '<thead><tr><th></th>';
+dims.forEach(d => html += `<th>${d}</th>`);
+html += '<th class="composite-col">Composite</th></tr></thead><tbody>';
+
+entities.forEach((e, i) => {
+  html += '<tr>';
+  html += `<td><span class="rank">${i + 1}</span>${e.name}</td>`;
+  e.scores.forEach(s => {
+    const c = scoreColor(s);
+    html += `<td style="background:${c.bg}; color:${c.text};">${s.toFixed(1)}</td>`;
+  });
+  const cc = compositeColor(e.composite);
+  html += `<td class="composite-cell" style="background:${cc.bg}; color:${cc.text};">${e.composite.toFixed(1)}</td>`;
+  html += '</tr>';
+});
+
+html += '</tbody>';
+table.innerHTML = html;
+</script>
+</body>
+</html>

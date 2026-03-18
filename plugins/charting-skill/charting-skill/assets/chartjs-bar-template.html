@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bar Chart Template</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; padding: 2rem; }
+h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+p.sub { font-size: 14px; color: #666; margin-bottom: 1.5rem; }
+.chart-wrap { position: relative; width: 100%; max-width: 760px; height: 400px; }
+</style>
+</head>
+<body>
+<h2>Chart title — qualifier or date range</h2>
+<p class="sub">Key takeaway sentence summarizing the data story.</p>
+<div class="chart-wrap">
+  <canvas id="chart"></canvas>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// === DATA ===
+const labels = ['Category A','Category B','Category C','Category D','Category E'];
+const values = [12, 28, 35, 19, 42];
+const colors = ['#1a6e5e','#1a6e5e','#c45a2c','#6b4c9a','#c45a2c'];
+
+// === REFERENCE LINE CONFIG (optional — remove plugin below if not needed) ===
+const REF_VALUE = 30;
+const REF_LABEL = 'Benchmark: 30';
+
+// === CHART ===
+new Chart(document.getElementById('chart'), {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [{
+      data: values,
+      backgroundColor: colors,
+      borderRadius: 2,
+      barPercentage: 0.7,
+      categoryPercentage: 0.8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { top: 30 } },
+    plugins: { legend: { display: false }, tooltip: { enabled: true } },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: {
+          color: 'rgba(0,0,0,0.5)',
+          font: { size: 12 },
+          maxRotation: 40,
+          minRotation: 40,
+          autoSkip: false
+        },
+        border: { display: false }
+      },
+      y: {
+        ticks: {
+          color: 'rgba(0,0,0,0.5)',
+          font: { size: 12 }
+        },
+        grid: { color: 'rgba(0,0,0,0.08)', lineWidth: 0.5 },
+        border: { display: false },
+        title: {
+          display: true,
+          text: 'Y-axis label',
+          color: 'rgba(0,0,0,0.5)',
+          font: { size: 12 }
+        }
+      }
+    }
+  },
+  plugins: [
+    // Plugin 1: Horizontal reference line
+    {
+      id: 'refLine',
+      afterDraw(chart) {
+        const ctx = chart.ctx;
+        const yScale = chart.scales.y;
+        const xScale = chart.scales.x;
+        const yPx = yScale.getPixelForValue(REF_VALUE);
+        ctx.save();
+        ctx.setLineDash([8, 5]);
+        ctx.strokeStyle = '#c43030';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(xScale.left, yPx);
+        ctx.lineTo(xScale.right, yPx);
+        ctx.stroke();
+        ctx.restore();
+        ctx.save();
+        ctx.font = '500 12px sans-serif';
+        ctx.fillStyle = '#c43030';
+        ctx.textAlign = 'left';
+        ctx.fillText(REF_LABEL, xScale.left, yPx - 6);
+        ctx.restore();
+      }
+    },
+    // Plugin 2: Data labels above bars
+    {
+      id: 'barLabels',
+      afterDraw(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        ctx.save();
+        ctx.font = '500 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        meta.data.forEach((bar, i) => {
+          const v = values[i];
+          const yPos = v >= 0 ? bar.y - 8 : bar.y + 16;
+          ctx.fillText(v, bar.x, yPos);
+        });
+        ctx.restore();
+      }
+    }
+  ]
+});
+</script>
+</body>
+</html>

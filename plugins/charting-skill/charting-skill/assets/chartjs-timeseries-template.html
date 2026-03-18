@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Series Template</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; padding: 2rem; }
+h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+p.sub { font-size: 14px; color: #666; margin-bottom: 0.5rem; line-height: 1.5; }
+.meta { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 1.5rem; font-size: 13px; color: #888; }
+.meta .val { font-weight: 600; color: #1a1a1a; }
+.chart-wrap { position: relative; width: 100%; max-width: 900px; height: 400px; }
+</style>
+</head>
+<body>
+<h2>Series name — date range</h2>
+<p class="sub">Description of the data source and methodology.</p>
+<div class="meta">
+  <span>Current: <span class="val">VALUE</span></span>
+  <span>High: <span class="val" style="color:#c43030;">VALUE</span> (DATE)</span>
+  <span>Low: <span class="val" style="color:#2a7d6b;">VALUE</span> (DATE)</span>
+</div>
+<div class="chart-wrap">
+  <canvas id="chart"></canvas>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// === DATA ===
+// For large datasets, generate these arrays from source data
+const rawDates = ['1/1/2025','2/1/2025','3/1/2025']; // M/D/YYYY format
+const rawValues = [50, 65, 58];
+
+// === PARSE DATES ===
+const parsedDates = rawDates.map(d => {
+  const p = d.split('/');
+  return new Date(+p[2], +p[0]-1, +p[1]);
+});
+
+// === DEDUPLICATED X-AXIS LABELS ===
+// Adjust mon % N for label frequency: 6 = semi-annual, 3 = quarterly, 1 = monthly
+const labels = [];
+let lastKey = '';
+parsedDates.forEach(d => {
+  const mon = d.getMonth();
+  const yr = d.getFullYear();
+  const key = yr + '-' + mon;
+  if (mon % 6 === 0 && key !== lastKey) {
+    labels.push(d.toLocaleString('en-US',{month:'short'}) + ' ' + yr.toString().slice(-2));
+    lastKey = key;
+  } else {
+    labels.push('');
+  }
+});
+
+// === PEAK / TROUGH ===
+const peak = Math.max(...rawValues);
+const trough = Math.min(...rawValues);
+const peakIdx = rawValues.indexOf(peak);
+const troughIdx = rawValues.indexOf(trough);
+
+// === EVENT ANNOTATIONS (optional) ===
+// side: which side of the vertical line the label appears
+// yOff: vertical offset from top of chart area to stagger labels
+const events = [
+  { date: '1/1/2025', label: 'Event A', side: 'right', yOff: 6 },
+  { date: '3/1/2025', label: 'Event B', side: 'left', yOff: 6 },
+];
+const eventIndices = events.map(e => ({ ...e, idx: rawDates.indexOf(e.date) })).filter(e => e.idx >= 0);
+
+// === CHART ===
+new Chart(document.getElementById('chart'), {
+  type: 'line',
+  data: {
+    labels: labels,
+    datasets: [{
+      data: rawValues,
+      borderColor: '#2a5da8',
+      backgroundColor: 'rgba(42,93,168,0.06)',
+      borderWidth: 1.5,
+      pointRadius: 0,
+      pointHitRadius: 6,
+      fill: true,
+      tension: 0.1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { top: 30, right: 50 } },
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        titleFont: { size: 12 },
+        bodyFont: { size: 13, weight: '500' },
+        padding: 10,
+        displayColors: false,
+        callbacks: {
+          title: function(items) {
+            const d = parsedDates[items[0].dataIndex];
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          },
+          label: function(ctx) { return ctx.raw.toFixed(1) + ' units'; }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: {
+          color: 'rgba(0,0,0,0.5)',
+          font: { size: 12, weight: '500' },
+          maxRotation: 0,
+          autoSkip: true,
+          maxTicksLimit: 14,
+          callback: function(val, idx) { return labels[idx] || undefined; }
+        },
+        border: { display: false }
+      },
+      y: {
+        ticks: {
+          color: 'rgba(0,0,0,0.4)',
+          font: { size: 11 },
+          callback: v => v + ' units'
+        },
+        grid: { color: 'rgba(0,0,0,0.06)', lineWidth: 0.5 },
+        border: { display: false }
+      }
+    }
+  },
+  plugins: [{
+    id: 'annotations',
+    afterDraw(chart) {
+      const ctx = chart.ctx;
+      const meta = chart.getDatasetMeta(0);
+      const yScale = chart.scales.y;
+
+      // Peak dot + label
+      ctx.save();
+      const peakPt = meta.data[peakIdx];
+      if (peakPt) {
+        ctx.beginPath();
+        ctx.arc(peakPt.x, peakPt.y, 4, 0, Math.PI*2);
+        ctx.fillStyle = '#c43030';
+        ctx.fill();
+        ctx.font = '500 11px -apple-system, sans-serif';
+        ctx.fillStyle = '#c43030';
+        ctx.textAlign = 'left';
+        ctx.fillText(peak.toFixed(1), peakPt.x + 8, peakPt.y - 4);
+      }
+
+      // Trough dot + label
+      const troughPt = meta.data[troughIdx];
+      if (troughPt) {
+        ctx.beginPath();
+        ctx.arc(troughPt.x, troughPt.y, 4, 0, Math.PI*2);
+        ctx.fillStyle = '#2a7d6b';
+        ctx.fill();
+        ctx.fillStyle = '#2a7d6b';
+        ctx.textAlign = 'center';
+        ctx.fillText(trough.toFixed(1), troughPt.x, troughPt.y + 16);
+      }
+      ctx.restore();
+
+      // Event vertical lines
+      ctx.save();
+      eventIndices.forEach(e => {
+        const pt = meta.data[e.idx];
+        if (!pt) return;
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pt.x, yScale.top);
+        ctx.lineTo(pt.x, yScale.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = '500 12px -apple-system, sans-serif';
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.textAlign = e.side === 'left' ? 'right' : 'left';
+        const xOff = e.side === 'left' ? -6 : 6;
+        ctx.fillText(e.label, pt.x + xOff, yScale.top + e.yOff);
+      });
+      ctx.restore();
+
+      // Current value endpoint
+      ctx.save();
+      const lastPt = meta.data[meta.data.length - 1];
+      if (lastPt) {
+        ctx.beginPath();
+        ctx.arc(lastPt.x, lastPt.y, 3, 0, Math.PI*2);
+        ctx.fillStyle = '#2a5da8';
+        ctx.fill();
+        ctx.font = '500 11px -apple-system, sans-serif';
+        ctx.fillStyle = '#2a5da8';
+        ctx.textAlign = 'right';
+        ctx.fillText(rawValues[rawValues.length-1].toFixed(1), lastPt.x - 8, lastPt.y - 8);
+      }
+      ctx.restore();
+    }
+  }]
+});
+</script>
+</body>
+</html>

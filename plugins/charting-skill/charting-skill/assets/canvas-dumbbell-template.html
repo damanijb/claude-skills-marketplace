@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dumbbell Chart Template</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; padding: 2rem; }
+h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+p.sub { font-size: 14px; color: #666; margin-bottom: 1.25rem; }
+.legend { display: flex; gap: 20px; margin-bottom: 1.5rem; font-size: 13px; color: #555; }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.legend .dot { width: 10px; height: 10px; border-radius: 50%; }
+.legend .line { width: 20px; height: 3px; border-radius: 2px; }
+</style>
+</head>
+<body>
+<h2>Chart title — before → after comparison</h2>
+<p class="sub">Key takeaway sentence.</p>
+<div class="legend">
+  <span><span class="dot" style="background: #aaa; border: 2px solid #999;"></span>Before</span>
+  <span><span class="dot" style="background: #1a1a1a;"></span>After</span>
+  <span><span class="line" style="background: #c43030;"></span>Decrease</span>
+  <span><span class="line" style="background: #2a7d6b;"></span>Increase</span>
+  <span><span class="line" style="background: #bbb;"></span>No change</span>
+</div>
+<canvas id="chart"></canvas>
+<script>
+// === DATA ===
+// Scale: array of values along the x-axis (low to high)
+const scale = ['A3','A2','A1','Aa3','Aa2','Aa1','Aaa'];
+const scaleToNum = {};
+scale.forEach((s, i) => scaleToNum[s] = i);
+
+// Items: each row in the chart
+// status: 'increase' | 'decrease' | 'stable'
+const items = [
+  { name: 'Item A', old: 'A1',  now: 'Aa2', status: 'increase' },
+  { name: 'Item B', old: 'Aa3', now: 'Aa3', status: 'stable' },
+  { name: 'Item C', old: 'Aa3', now: 'A1',  status: 'decrease' },
+];
+
+const statusColor = { increase: '#2a7d6b', decrease: '#c43030', stable: '#bbb' };
+const statusLabel = { increase: '↑ INCREASE', decrease: '↓ DECREASE', stable: '— STABLE' };
+const statusLabelColor = { increase: '#2a7d6b', decrease: '#c43030', stable: '#999' };
+
+// === CANVAS SETUP (HiDPI) ===
+const canvas = document.getElementById('chart');
+const ctx = canvas.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+const W = 800;
+const H = 50 + items.length * 55 + 50; // topPad + rows + bottomPad
+canvas.width = W * dpr;
+canvas.height = H * dpr;
+canvas.style.width = W + 'px';
+canvas.style.height = H + 'px';
+ctx.scale(dpr, dpr);
+
+// === LAYOUT ===
+const leftPad = 130;
+const rightPad = 120;
+const topPad = 20;
+const botPad = 50;
+const chartW = W - leftPad - rightPad;
+const chartH = H - topPad - botPad;
+const rowH = chartH / items.length;
+
+function xFor(val) {
+  return leftPad + (scaleToNum[val] / (scale.length - 1)) * chartW;
+}
+
+// === DRAW GRIDLINES ===
+ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+ctx.lineWidth = 0.5;
+scale.forEach(s => {
+  const x = xFor(s);
+  ctx.beginPath();
+  ctx.moveTo(x, topPad);
+  ctx.lineTo(x, topPad + chartH);
+  ctx.stroke();
+});
+
+// === DRAW X-AXIS LABELS ===
+ctx.fillStyle = 'rgba(0,0,0,0.45)';
+ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'top';
+scale.forEach(s => ctx.fillText(s, xFor(s), topPad + chartH + 12));
+
+// === DRAW ROWS ===
+items.forEach((item, i) => {
+  const y = topPad + rowH * i + rowH / 2;
+  const xOld = xFor(item.old);
+  const xNow = xFor(item.now);
+  const color = statusColor[item.status];
+
+  // Row label
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.font = '500 13px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(item.name, leftPad - 14, y);
+
+  // Connecting line + arrow (or stable dash)
+  if (item.status !== 'stable') {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(xOld, y);
+    ctx.lineTo(xNow, y);
+    ctx.stroke();
+
+    // Arrowhead
+    const dir = xNow > xOld ? 1 : -1;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(xNow, y);
+    ctx.lineTo(xNow - dir * 9, y - 5);
+    ctx.lineTo(xNow - dir * 9, y + 5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Hollow dot at old position
+    ctx.beginPath();
+    ctx.arc(xOld, y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.strokeStyle = '#999';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  } else {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(xOld - 12, y);
+    ctx.lineTo(xOld + 12, y);
+    ctx.stroke();
+  }
+
+  // Solid dot at current position
+  ctx.beginPath();
+  ctx.arc(xNow, y, 5, 0, Math.PI * 2);
+  ctx.fillStyle = item.status === 'stable' ? '#888' : '#1a1a1a';
+  ctx.fill();
+
+  // Status label
+  const labelX = Math.max(xOld, xNow) + 14;
+  ctx.fillStyle = statusLabelColor[item.status];
+  ctx.font = '500 11px -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(statusLabel[item.status], labelX, y);
+});
+</script>
+</body>
+</html>
