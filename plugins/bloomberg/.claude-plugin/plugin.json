@@ -1,0 +1,10 @@
+{
+  "name": "bloomberg",
+  "version": "1.0.0",
+  "description": "Comprehensive Bloomberg Python toolkit — BQL data retrieval, factor analysis, visualization, and portfolio construction using polars-bloomberg, bql, bqfactor, bqviz, and bqapi in the bqnt-3 conda environment.",
+  "author": {
+    "name": "damanijb",
+    "url": "https://github.com/damanijb"
+  },
+  "keywords": ["bloomberg", "bql", "bqfactor", "bqviz", "bqapi", "finance", "equity", "fixed-income", "factor-analysis", "portfolio", "polars"]
+}

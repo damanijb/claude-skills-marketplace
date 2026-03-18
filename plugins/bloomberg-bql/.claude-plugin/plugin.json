@@ -1,0 +1,10 @@
+{
+  "name": "bloomberg-bql",
+  "version": "1.0.0",
+  "description": "Bloomberg Query Language (BQL) skill for retrieving financial data across equities, fixed income, portfolios, funds, CDS, and MBS using polars-bloomberg (BQuery) in Python. Covers BQL syntax, universe functions, data items, screening, time series, grouping, and custom analytics.",
+  "author": {
+    "name": "damanijb",
+    "url": "https://github.com/damanijb"
+  },
+  "keywords": ["bloomberg", "bql", "finance", "equity", "fixed-income", "polars"]
+}
