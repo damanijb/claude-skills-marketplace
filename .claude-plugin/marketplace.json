@@ -40,6 +40,30 @@
       "version": "0.1.0",
       "category": "finance",
       "keywords": ["credit-analysis", "investment-research", "financial-modeling", "excel", "docx", "d3-charts", "infographics", "chrome-automation", "bank-analysis", "credit-scoring"]
+    },
+    {
+      "name": "bloomberg-bql",
+      "source": "./plugins/bloomberg-bql",
+      "description": "Bloomberg Query Language (BQL) skill for retrieving financial data across equities, fixed income, portfolios, funds, CDS, and MBS using polars-bloomberg (BQuery) in Python. Covers BQL syntax, universe functions, data items, screening, time series, grouping, and custom analytics.",
+      "version": "1.0.0",
+      "category": "finance",
+      "keywords": ["bloomberg", "bql", "finance", "equity", "fixed-income", "polars"]
+    },
+    {
+      "name": "bloomberg",
+      "source": "./plugins/bloomberg",
+      "description": "Comprehensive Bloomberg Python toolkit — BQL data retrieval, factor analysis, visualization, and portfolio construction using polars-bloomberg, bql, bqfactor, bqviz, and bqapi in the bqnt-3 conda environment.",
+      "version": "1.0.0",
+      "category": "finance",
+      "keywords": ["bloomberg", "bql", "bqfactor", "bqviz", "bqapi", "finance", "equity", "fixed-income", "factor-analysis", "portfolio", "polars"]
+    },
+    {
+      "name": "charting-skill",
+      "source": "./plugins/charting-skill",
+      "description": "Chart.js and Canvas-based charting templates — bar charts, time series, dumbbell charts, and heatmaps with pre-built HTML templates and D3 pattern references.",
+      "version": "1.0.0",
+      "category": "data visualization",
+      "keywords": ["chartjs", "canvas", "charts", "bar-chart", "time-series", "heatmap", "dumbbell-chart", "html-templates"]
     }
   ]
 }
