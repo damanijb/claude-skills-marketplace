@@ -1,0 +1,8 @@
+{
+  "name": "charting-skill",
+  "description": "Chart.js and Canvas-based charting templates — bar charts, time series, dumbbell charts, and heatmaps with pre-built HTML templates and D3 pattern references.",
+  "author": {
+    "name": "damanijb",
+    "url": "https://github.com/damanijb"
+  }
+}
