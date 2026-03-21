@@ -33,14 +33,12 @@ fi
 # -----------------------------------------------------------
 
 REDACT_CLI="${REDACT_CLI_PATH:-$(command -v redact-cli 2>/dev/null || echo "")}"
+PRESIDIO_SCRIPT="$CLAUDE_PLUGIN_ROOT/hooks/scripts/scrub-presidio.py"
 
+# =============================================
+# TIER 1A: redact-cli (Rust + ONNX BERT NER)
+# =============================================
 if [ -n "$REDACT_CLI" ] && [ -x "$REDACT_CLI" ]; then
-  # =============================================
-  # TIER 1: redact-cli (Rust + ONNX BERT NER)
-  # Catches: names, addresses, orgs, locations,
-  # plus 36 pattern types (SSN, CC, phone, etc.)
-  # =============================================
-
   scrubbed=$(echo "$tool_response" | "$REDACT_CLI" anonymize \
     --strategy replace \
     --replacement "[REDACTED]" 2>/dev/null) || scrubbed=""
@@ -51,6 +49,26 @@ if [ -n "$REDACT_CLI" ] && [ -x "$REDACT_CLI" ]; then
       '{
         "hookSpecificOutput": {
           "additionalContext": ("⚠️ PII SCRUBBED FROM TOOL OUTPUT [" + $tool + "] via redact-cli (ML+patterns). Sensitive values replaced with [REDACTED]. Do NOT re-read source to bypass redaction.")
+        }
+      }'
+    exit 0
+  fi
+fi
+
+# =============================================
+# TIER 1B: Presidio (Python, spaCy NER + patterns)
+# =============================================
+if [ -f "$PRESIDIO_SCRIPT" ] && command -v python3 &>/dev/null; then
+  result=$(echo "$tool_response" | python3 "$PRESIDIO_SCRIPT" 2>/dev/null) || result=""
+
+  if [ -n "$result" ]; then
+    types=$(echo "$result" | jq -r '.types | join(", ")' 2>/dev/null)
+    jq -n \
+      --arg tool "$tool_name" \
+      --arg types "$types" \
+      '{
+        "hookSpecificOutput": {
+          "additionalContext": ("⚠️ PII SCRUBBED FROM TOOL OUTPUT [" + $tool + "] via Presidio (NER+patterns): " + $types + ". Do NOT re-read source to bypass redaction.")
         }
       }'
     exit 0

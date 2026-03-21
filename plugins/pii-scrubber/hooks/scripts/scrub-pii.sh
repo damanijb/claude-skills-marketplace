@@ -21,24 +21,34 @@ fi
 # -----------------------------------------------------------
 
 REDACT_CLI="${REDACT_CLI_PATH:-$(command -v redact-cli 2>/dev/null || echo "")}"
+PRESIDIO_SCRIPT="$CLAUDE_PLUGIN_ROOT/hooks/scripts/scrub-presidio.py"
 
+# =============================================
+# TIER 1A: redact-cli (Rust + ONNX BERT NER)
+# =============================================
 if [ -n "$REDACT_CLI" ] && [ -x "$REDACT_CLI" ]; then
-  # =============================================
-  # TIER 1: redact-cli (Rust + ONNX BERT NER)
-  # =============================================
-
   scrubbed=$(echo "$user_prompt" | "$REDACT_CLI" anonymize \
     --strategy replace \
     --replacement "[REDACTED]" 2>/dev/null) || scrubbed=""
 
   if [ -n "$scrubbed" ] && [ "$scrubbed" != "$user_prompt" ]; then
-    context_msg="⚠️ PII DETECTED AND SCRUBBED via redact-cli (ML+patterns). The user's original prompt contained sensitive data that has been replaced with [REDACTED]. IMPORTANT: Do NOT ask the user to re-share redacted information. Do NOT attempt to guess or reconstruct redacted values. Treat all [REDACTED] tokens as permanent redactions. Scrubbed prompt: ${scrubbed}"
+    context_msg="⚠️ PII DETECTED AND SCRUBBED via redact-cli (ML+patterns). Sensitive data replaced with [REDACTED]. IMPORTANT: Do NOT ask the user to re-share redacted information. Scrubbed prompt: ${scrubbed}"
+    jq -n --arg ctx "$context_msg" '{"hookSpecificOutput":{"additionalContext":$ctx}}'
+    exit 0
+  fi
+fi
 
-    jq -n --arg ctx "$context_msg" '{
-      "hookSpecificOutput": {
-        "additionalContext": $ctx
-      }
-    }'
+# =============================================
+# TIER 1B: Presidio (Python, spaCy NER + patterns)
+# =============================================
+if [ -f "$PRESIDIO_SCRIPT" ] && command -v python3 &>/dev/null; then
+  result=$(echo "$user_prompt" | python3 "$PRESIDIO_SCRIPT" 2>/dev/null) || result=""
+
+  if [ -n "$result" ]; then
+    scrubbed=$(echo "$result" | jq -r '.scrubbed' 2>/dev/null)
+    types=$(echo "$result" | jq -r '.types | join(", ")' 2>/dev/null)
+    context_msg="⚠️ PII DETECTED AND SCRUBBED via Presidio (NER+patterns): ${types}. IMPORTANT: Do NOT ask the user to re-share redacted information. Scrubbed prompt: ${scrubbed}"
+    jq -n --arg ctx "$context_msg" '{"hookSpecificOutput":{"additionalContext":$ctx}}'
     exit 0
   fi
 fi
