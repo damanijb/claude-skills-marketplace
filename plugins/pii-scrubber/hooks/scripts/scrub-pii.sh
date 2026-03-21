@@ -2,11 +2,13 @@
 set -euo pipefail
 
 # ============================================================
-# PII Scrubber — UserPromptSubmit Hook (v2: redact-cli powered)
+# PII Scrubber — UserPromptSubmit Hook
 #
 # Intercepts user prompts BEFORE Claude sees them.
-# Uses redact-cli (Rust/ONNX BERT) for ML-powered PII detection.
-# Falls back to regex if redact-cli unavailable.
+# Tier 1: Presidio (Python, spaCy NER + treasury patterns)
+# Tier 2: Regex fallback (bash-native, no dependencies)
+#
+# Dependencies: pip install presidio-analyzer presidio-anonymizer
 # ============================================================
 
 input=$(cat)
@@ -16,30 +18,12 @@ if [ -z "$user_prompt" ]; then
   exit 0
 fi
 
-# -----------------------------------------------------------
-# STRATEGY: Try redact-cli first, fall back to regex
-# -----------------------------------------------------------
-
-REDACT_CLI="${REDACT_CLI_PATH:-$(command -v redact-cli 2>/dev/null || echo "")}"
 PRESIDIO_SCRIPT="$CLAUDE_PLUGIN_ROOT/hooks/scripts/scrub-presidio.py"
 
 # =============================================
-# TIER 1A: redact-cli (Rust + ONNX BERT NER)
-# =============================================
-if [ -n "$REDACT_CLI" ] && [ -x "$REDACT_CLI" ]; then
-  scrubbed=$(echo "$user_prompt" | "$REDACT_CLI" anonymize \
-    --strategy replace \
-    --replacement "[REDACTED]" 2>/dev/null) || scrubbed=""
-
-  if [ -n "$scrubbed" ] && [ "$scrubbed" != "$user_prompt" ]; then
-    context_msg="⚠️ PII DETECTED AND SCRUBBED via redact-cli (ML+patterns). Sensitive data replaced with [REDACTED]. IMPORTANT: Do NOT ask the user to re-share redacted information. Scrubbed prompt: ${scrubbed}"
-    jq -n --arg ctx "$context_msg" '{"hookSpecificOutput":{"additionalContext":$ctx}}'
-    exit 0
-  fi
-fi
-
-# =============================================
-# TIER 1B: Presidio (Python, spaCy NER + patterns)
+# TIER 1: Presidio (spaCy NER + custom patterns)
+# Catches: SSN, phone, email, dates, routing,
+# CUSIP, SWIFT, wire refs, bank accounts
 # =============================================
 if [ -f "$PRESIDIO_SCRIPT" ] && command -v python3 &>/dev/null; then
   result=$(echo "$user_prompt" | python3 "$PRESIDIO_SCRIPT" 2>/dev/null) || result=""
@@ -47,14 +31,14 @@ if [ -f "$PRESIDIO_SCRIPT" ] && command -v python3 &>/dev/null; then
   if [ -n "$result" ]; then
     scrubbed=$(echo "$result" | jq -r '.scrubbed' 2>/dev/null)
     types=$(echo "$result" | jq -r '.types | join(", ")' 2>/dev/null)
-    context_msg="⚠️ PII DETECTED AND SCRUBBED via Presidio (NER+patterns): ${types}. IMPORTANT: Do NOT ask the user to re-share redacted information. Scrubbed prompt: ${scrubbed}"
+    context_msg="⚠️ PII DETECTED AND SCRUBBED via Presidio (NER+patterns): ${types}. IMPORTANT: Do NOT ask the user to re-share redacted information. Do NOT attempt to guess or reconstruct redacted values. Treat all redacted tokens as permanent. Scrubbed prompt: ${scrubbed}"
     jq -n --arg ctx "$context_msg" '{"hookSpecificOutput":{"additionalContext":$ctx}}'
     exit 0
   fi
 fi
 
 # =============================================
-# TIER 2: Regex fallback (bash-native)
+# TIER 2: Regex fallback (no Python required)
 # =============================================
 
 found_types=()
@@ -95,12 +79,6 @@ if echo "$scrubbed" | grep -qE '[0-9]{3}-[0-9]{2}-[0-9]{4}'; then
   scrubbed=$(echo "$scrubbed" | sed -E 's/[0-9]{3}-[0-9]{2}-[0-9]{4}/[REDACTED-SSN]/g')
   found_types+=("SSN")
 fi
-if echo "$scrubbed" | grep -qE '[0-9]{3} [0-9]{2} [0-9]{4}'; then
-  scrubbed=$(echo "$scrubbed" | sed -E 's/[0-9]{3} [0-9]{2} [0-9]{4}/[REDACTED-SSN]/g')
-  if [[ ! " ${found_types[*]} " =~ " SSN " ]]; then
-    found_types+=("SSN")
-  fi
-fi
 
 # --- Credit Card ---
 if echo "$scrubbed" | grep -qE '(4[0-9]{3}|5[1-5][0-9]{2}|3[47][0-9]{2}|6011)[- ][0-9]{4}[- ][0-9]{4}[- ][0-9]{1,7}'; then
@@ -138,12 +116,8 @@ fi
 
 types_list=$(printf '%s, ' "${found_types[@]}" | sed 's/, $//')
 
-context_msg="⚠️ PII DETECTED AND SCRUBBED via regex fallback. The user's original prompt contained: ${types_list}. All PII replaced with [REDACTED-*]. IMPORTANT: Do NOT ask the user to re-share redacted information. Install redact-cli for ML-powered detection (names, addresses, orgs). Scrubbed prompt: ${scrubbed}"
+context_msg="⚠️ PII DETECTED AND SCRUBBED via regex: ${types_list}. All PII replaced with [REDACTED-*]. IMPORTANT: Do NOT ask the user to re-share redacted information. Scrubbed prompt: ${scrubbed}"
 
-jq -n --arg ctx "$context_msg" '{
-  "hookSpecificOutput": {
-    "additionalContext": $ctx
-  }
-}'
+jq -n --arg ctx "$context_msg" '{"hookSpecificOutput":{"additionalContext":$ctx}}'
 
 exit 0

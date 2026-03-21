@@ -2,19 +2,19 @@
 set -euo pipefail
 
 # ============================================================
-# PII Scrubber — PostToolUse Hook (v2: redact-cli powered)
+# PII Scrubber — PostToolUse Hook
 #
 # Intercepts tool OUTPUT after execution but before Claude
-# processes the result. Uses redact-cli (Rust/ONNX BERT) for
-# ML-powered PII detection: names, addresses, orgs, plus 36
-# pattern types. Falls back to regex if redact-cli unavailable.
+# processes the result. Critical for bank statement PDFs.
+# Tier 1: Presidio (Python, spaCy NER + treasury patterns)
+# Tier 2: Regex fallback (bash-native, no dependencies)
 #
-# Performance: ~0.2ms p50 latency via redact-cli vs ~7ms Presidio
+# Dependencies: pip install presidio-analyzer presidio-anonymizer
 # ============================================================
 
 input=$(cat)
 
-# PostToolUse receives "tool_response" (object)
+# PostToolUse receives "tool_response" (object or string)
 tool_response=$(echo "$input" | jq -r '
   .tool_response // empty |
   if type == "object" then tostring
@@ -28,35 +28,10 @@ if [ -z "$tool_response" ]; then
   exit 0
 fi
 
-# -----------------------------------------------------------
-# STRATEGY: Try redact-cli first, fall back to regex
-# -----------------------------------------------------------
-
-REDACT_CLI="${REDACT_CLI_PATH:-$(command -v redact-cli 2>/dev/null || echo "")}"
 PRESIDIO_SCRIPT="$CLAUDE_PLUGIN_ROOT/hooks/scripts/scrub-presidio.py"
 
 # =============================================
-# TIER 1A: redact-cli (Rust + ONNX BERT NER)
-# =============================================
-if [ -n "$REDACT_CLI" ] && [ -x "$REDACT_CLI" ]; then
-  scrubbed=$(echo "$tool_response" | "$REDACT_CLI" anonymize \
-    --strategy replace \
-    --replacement "[REDACTED]" 2>/dev/null) || scrubbed=""
-
-  if [ -n "$scrubbed" ] && [ "$scrubbed" != "$tool_response" ]; then
-    jq -n \
-      --arg tool "$tool_name" \
-      '{
-        "hookSpecificOutput": {
-          "additionalContext": ("⚠️ PII SCRUBBED FROM TOOL OUTPUT [" + $tool + "] via redact-cli (ML+patterns). Sensitive values replaced with [REDACTED]. Do NOT re-read source to bypass redaction.")
-        }
-      }'
-    exit 0
-  fi
-fi
-
-# =============================================
-# TIER 1B: Presidio (Python, spaCy NER + patterns)
+# TIER 1: Presidio (spaCy NER + custom patterns)
 # =============================================
 if [ -f "$PRESIDIO_SCRIPT" ] && command -v python3 &>/dev/null; then
   result=$(echo "$tool_response" | python3 "$PRESIDIO_SCRIPT" 2>/dev/null) || result=""
@@ -76,8 +51,7 @@ if [ -f "$PRESIDIO_SCRIPT" ] && command -v python3 &>/dev/null; then
 fi
 
 # =============================================
-# TIER 2: Regex fallback (bash-native)
-# Catches structured patterns only
+# TIER 2: Regex fallback (no Python required)
 # =============================================
 
 found_types=()
@@ -148,7 +122,7 @@ jq -n \
   --arg tool "$tool_name" \
   '{
     "hookSpecificOutput": {
-      "additionalContext": ("⚠️ PII SCRUBBED FROM TOOL OUTPUT [" + $tool + "] via regex fallback: Detected " + $types + ". Values replaced with [REDACTED-*]. Do NOT re-read source to bypass redaction. Install redact-cli for ML-powered detection (names, addresses, orgs).")
+      "additionalContext": ("⚠️ PII SCRUBBED FROM TOOL OUTPUT [" + $tool + "] via regex: " + $types + ". Values replaced with [REDACTED-*]. Do NOT re-read source to bypass redaction.")
     }
   }'
 
