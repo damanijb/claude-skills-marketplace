@@ -16,7 +16,9 @@ set -euo pipefail
 input=$(cat)
 
 # Get the tool output content
-tool_output=$(echo "$input" | jq -r '.tool_output // empty')
+# PostToolUse receives "tool_response" (object), not "tool_output"
+# Convert the response object to string for scanning
+tool_output=$(echo "$input" | jq -r '.tool_response // empty | if type == "object" then tostring else . end')
 tool_name=$(echo "$input" | jq -r '.tool_name // "unknown"')
 
 if [ -z "$tool_output" ]; then
