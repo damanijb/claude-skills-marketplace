@@ -1,0 +1,29 @@
+{
+  "description": "Scrubs PII from user prompts AND tool outputs before Claude processes them",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/scrub-pii.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/scrub-tool-output.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -72,6 +72,14 @@
       "version": "0.1.0",
       "category": "finance",
       "keywords": ["banking", "reconciliation", "treasury", "wells-fargo", "bank-of-america", "statements", "san-bernardino-county"]
+    },
+    {
+      "name": "pii-scrubber",
+      "source": "./plugins/pii-scrubber",
+      "description": "Treasury-enhanced PII scrubber using UserPromptSubmit and PostToolUse hooks. Two-layer defense that intercepts and redacts sensitive data (bank accounts, routing numbers, CUSIPs, SSNs, credit cards, emails, phones, SWIFT codes, wire references) before Claude processes them. Critical for government finance workflows handling bank statements and portfolio data.",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": ["pii", "redaction", "security", "privacy", "treasury", "bank-statements", "compliance", "hooks", "government-finance"]
     }
   ]
 }

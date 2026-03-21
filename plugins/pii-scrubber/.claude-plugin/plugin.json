@@ -1,0 +1,5 @@
+{
+  "name": "pii-scrubber",
+  "version": "1.0.0",
+  "description": "Scrubs PII (SSNs, emails, phone numbers, credit cards, etc.) from user prompts before they reach Claude"
+}
