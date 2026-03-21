@@ -3,11 +3,10 @@
   "hooks": {
     "UserPromptSubmit": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/scrub-pii.sh",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/scrub-pii.sh",
             "timeout": 10
           }
         ]
@@ -15,11 +14,10 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/scrub-tool-output.sh",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/scrub-tool-output.sh",
             "timeout": 10
           }
         ]
