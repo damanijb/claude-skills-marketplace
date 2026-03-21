@@ -1,0 +1,38 @@
+{
+  "ocr": {
+    "webhookUrl": "https://samaritan.tail8478e1.ts.net/webhook/marker-pdf",
+    "timeout": 120000,
+    "retries": 2
+  },
+  "database": {
+    "server": "treasurer.database.windows.net",
+    "note": "Database credentials managed via azure-sql-treasurer skill. Do not store credentials here."
+  },
+  "directories": {
+    "bankStatements": {
+      "mac": "/Volumes/Shared/Banking/Bank Statements",
+      "windows": "T:/Data/Shared/Banking/Bank Statements"
+    },
+    "note": "Auto-detected by OS in scan_directories.js. Override with --path flag if needed."
+  },
+  "banks": {
+    "wells-fargo": {
+      "name": "Wells Fargo",
+      "filenamePattern": "WF",
+      "comparisonMethod": "daily-debit-totals",
+      "tolerance": 0.01
+    },
+    "bofa": {
+      "name": "Bank of America",
+      "filenamePattern": "BofA|50090",
+      "comparisonMethod": "ending-daily-balances",
+      "dateShift": -1,
+      "tolerance": 0.01
+    }
+  },
+  "reporting": {
+    "excelTemplate": "default",
+    "textReportIncludeTransactions": false,
+    "filenamePattern": "{department} {account} {monthShort} {yearShort} Reconciliation {status} {date}"
+  }
+}

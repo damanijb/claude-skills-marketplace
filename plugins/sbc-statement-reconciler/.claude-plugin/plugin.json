@@ -1,0 +1,17 @@
+{
+  "name": "sbc-statement-reconciler",
+  "version": "0.1.0",
+  "description": "Automate bank statement reconciliation for San Bernardino County Treasury. Parse Wells Fargo and Bank of America statements, OCR HTTP documents, reconcile transactions, generate Excel reports, and review results with AI.",
+  "author": {
+    "name": "San Bernardino County Auditor-Controller-Treasurer"
+  },
+  "keywords": [
+    "banking",
+    "reconciliation",
+    "treasury",
+    "wells-fargo",
+    "bank-of-america",
+    "statements",
+    "san-bernardino-county"
+  ]
+}

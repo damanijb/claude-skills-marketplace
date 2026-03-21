@@ -18,22 +18,6 @@
       "keywords": ["image-generation", "infographics", "finance", "investment-research", "gemini", "data-visualization"]
     },
     {
-      "name": "d3-viz",
-      "source": "./plugins/d3-viz",
-      "description": "Interactive data visualizations using D3.js v7. Comprehensive skill for creating charts, graphs, network diagrams, and geographic visualizations with fine-grained control over SVG elements, transitions, and interactions.",
-      "version": "1.0.0",
-      "category": "data visualization",
-      "keywords": ["d3", "charts", "data-visualization", "svg", "interactive", "finance", "dashboards"]
-    },
-    {
-      "name": "samaritan-memory",
-      "source": "./plugins/samaritan-memory",
-      "description": "Hybrid memory system combining Qdrant semantic vector search with Neo4j knowledge graph, powered by Qwen3-VL embeddings and reranking. Skills for recall, search, ingest, book ingestion, graph queries, and system diagnostics.",
-      "version": "1.0.0",
-      "category": "memory",
-      "keywords": ["memory", "rag", "qdrant", "neo4j", "embeddings", "knowledge-graph", "semantic-search", "qwen3-vl"]
-    },
-    {
       "name": "investment-analyst",
       "source": "./plugins/investment-analyst",
       "description": "End-to-end investment credit analysis pipeline. Automates research provider access (JPM, CapitalIQ, Fitch, CreditSights, Morgan Stanley), document collection, fundamental research with FRED macro data, 7-sheet Excel financial models with credit scoring, D3 charts, nano-banana infographics, and DOCX report generation with SBC Treasury branding.",
@@ -64,6 +48,30 @@
       "version": "1.0.0",
       "category": "data visualization",
       "keywords": ["chartjs", "canvas", "charts", "bar-chart", "time-series", "heatmap", "dumbbell-chart", "html-templates"]
+    },
+    {
+      "name": "mmf-analytics",
+      "source": "./plugins/mmf-analytics",
+      "description": "Money Market Fund analytics with charts and monthly meeting presentation for FRGXX, GOFXX, MVRXX, BGSXX.",
+      "version": "0.3.0",
+      "category": "finance",
+      "keywords": ["mmf", "money-market", "analytics", "charts", "datawrapper", "portfolio"]
+    },
+    {
+      "name": "sbc-pool-report",
+      "source": "./plugins/sbc-pool-report",
+      "description": "Generate publication-quality monthly investment pool reports for the San Bernardino County Treasurer's $16B portfolio. Features parallel sub-agent execution, rich economic storytelling with trend charts, and branded PowerPoint presentations with live data from Azure SQL, FRED, and web research.",
+      "version": "2.0.0",
+      "category": "finance",
+      "keywords": ["treasury", "portfolio", "investment", "pool-report", "compliance", "pptx", "economic", "FRED", "parallel-agents"]
+    },
+    {
+      "name": "sbc-statement-reconciler",
+      "source": "./plugins/sbc-statement-reconciler",
+      "description": "Automate bank statement reconciliation for San Bernardino County Treasury. Parse Wells Fargo and Bank of America statements, OCR HTTP documents, reconcile transactions, generate Excel reports, and review results with AI.",
+      "version": "0.1.0",
+      "category": "finance",
+      "keywords": ["banking", "reconciliation", "treasury", "wells-fargo", "bank-of-america", "statements", "san-bernardino-county"]
     }
   ]
 }

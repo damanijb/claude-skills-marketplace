@@ -1,0 +1,16 @@
+{
+  "name": "mmf-analytics",
+  "version": "0.3.0",
+  "description": "Money Market Fund analytics with charts and monthly meeting presentation for FRGXX, GOFXX, MVRXX, BGSXX",
+  "author": {
+    "name": "Damani"
+  },
+  "keywords": [
+    "mmf",
+    "money market",
+    "analytics",
+    "charts",
+    "datawrapper",
+    "portfolio"
+  ]
+}

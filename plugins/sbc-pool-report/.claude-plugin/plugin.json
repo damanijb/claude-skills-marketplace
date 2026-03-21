@@ -1,0 +1,9 @@
+{
+  "name": "sbc-pool-report",
+  "version": "2.0.0",
+  "description": "Generate publication-quality monthly investment pool reports for the San Bernardino County Treasurer's $16B portfolio. Features parallel sub-agent execution, rich economic storytelling with trend charts, and branded PowerPoint presentations with live data from Azure SQL, FRED, and web research.",
+  "author": {
+    "name": "San Bernardino County ATC"
+  },
+  "keywords": ["treasury", "portfolio", "investment", "pool-report", "compliance", "pptx", "economic", "FRED", "parallel-agents"]
+}
