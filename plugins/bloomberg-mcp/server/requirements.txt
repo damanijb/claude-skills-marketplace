@@ -1,9 +1,21 @@
-fastmcp>=2.0.0
-xbbg>=0.11.0
+# Core dependencies (installed to plugin-local lib/ via pip --target)
+# NOTE: blpapi is NOT listed here — it comes pre-installed with Bloomberg's BQuant Python
+# NOTE: Do NOT pip install this file directly. Use /bloomberg-setup which handles
+#       the two-pass install strategy (polars with deps, everything else --no-deps)
+
+# MCP server framework
+fastmcp>=3.1.0
+
+# Bloomberg data access
+xbbg>=0.12.0
 polars-bloomberg>=0.5.0
-blpapi>=3.24.0
-polars>=1.0.0
-matplotlib>=3.8.0
-altair>=5.0.0
+
+# Data
+polars>=1.39.0
+pyarrow>=22.0.0
+
+# Schema / validation
+pydantic>=2.12.0
+
+# Process detection (available in BQuant Python already)
 psutil>=5.9.0
-pydantic>=2.0.0

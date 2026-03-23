@@ -1,13 +1,10 @@
 """
 Bloomberg MCP Server — FastMCP implementation.
 
-Exposes 10 tools for Bloomberg data access, BQL queries, charting,
+Exposes 9 tools for Bloomberg data access, BQL queries, screening,
 and field search.  Designed for Claude Code integration.
 
-Run standalone:
-    python -m fastmcp run server.py
-
-Or via Claude Code MCP registration.
+Run via: python run_server.py
 """
 
 from __future__ import annotations
@@ -28,7 +25,6 @@ from fastmcp import FastMCP, Context
 
 from bloomberg_client import BloombergClient
 from bql_builder import build_bql_from_intent, validate_bql
-from chart_engine import generate_chart
 from utils import check_bloomberg_status
 
 logger = logging.getLogger("bloomberg_mcp")
@@ -133,15 +129,6 @@ class ScreenInput(BaseModel):
 class FieldSearchInput(BaseModel):
     query: str = Field(..., min_length=2, description="Search term for field mnemonics")
     max_results: int = Field(20, ge=1, le=100)
-
-
-class ChartInput(BaseModel):
-    chart_type: str = Field(..., description="timeseries, bar, scatter, heatmap, multipanel, or facet")
-    library: str = Field("matplotlib", description="matplotlib or altair")
-    data_json: list[dict] = Field(..., min_length=1, description="List of row dicts (from bloomberg_bdp/bdh output .data)")
-    title: str = Field("Bloomberg Data", description="Chart title")
-    x_col: str | None = Field(None, description="X-axis column (auto-detected if omitted)")
-    y_cols: list[str] | None = Field(None, description="Y-axis column(s) (auto-detected if omitted)")
 
 
 # ======================================================================
@@ -390,45 +377,3 @@ async def bloomberg_field_search(query: str, max_results: int = 20, ctx: Context
         return {"fields": results, "count": len(results), "query": inp.query}
     except Exception as e:
         return _error_response(str(e), "bloomberg_error", "Ensure Bloomberg Terminal is running")
-
-
-# ======================================================================
-# Tool 10: bloomberg_chart
-# ======================================================================
-
-@mcp.tool()
-async def bloomberg_chart(
-    chart_type: str,
-    library: str = "matplotlib",
-    data_json: list[dict] = [],
-    title: str = "Bloomberg Data",
-    x_col: str | None = None,
-    y_cols: list[str] | None = None,
-) -> dict[str, Any]:
-    """Generate a professional chart from Bloomberg data.
-
-    matplotlib chart types: timeseries, bar, scatter, heatmap, multipanel
-    altair chart types: timeseries, bar, scatter, facet
-
-    Pass the .data array from any bloomberg_bdp/bdh/bql result as data_json.
-    x_col and y_cols are auto-detected if omitted.
-
-    Returns the file path to the saved chart (PNG for matplotlib, HTML for altair).
-    """
-    try:
-        inp = ChartInput(chart_type=chart_type, library=library, data_json=data_json, title=title, x_col=x_col, y_cols=y_cols)
-    except Exception as e:
-        return _error_response(str(e), "validation_error")
-
-    try:
-        return await asyncio.to_thread(
-            generate_chart,
-            inp.chart_type,
-            inp.library,
-            inp.data_json,
-            inp.title,
-            inp.x_col,
-            inp.y_cols,
-        )
-    except Exception as e:
-        return _error_response(str(e), "chart_error", "Check data format and chart type compatibility")

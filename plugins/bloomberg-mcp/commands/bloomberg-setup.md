@@ -32,17 +32,28 @@ If BQuant Python is not found at `C:/blp/bqnt/environments/bqnt-3/python.exe`, c
 
 ## Step 2: Install Extra Dependencies to Plugin lib/
 
-Install the packages Bloomberg's Python is missing into a local `lib/` directory:
+Install in two passes. First, packages that need full dependency resolution (wheels with native binaries):
 
 ```bash
-"C:/blp/bqnt/environments/bqnt-3/python.exe" -m pip install --target "${CLAUDE_PLUGIN_ROOT}/lib" --upgrade --no-deps fastmcp xbbg polars-bloomberg polars pydantic pydantic-core altair anyio httpx httpx-sse sniffio certifi idna h11 starlette typing-extensions annotated-types uvicorn click jsonschema narwhals toolz jinja2 markupsafe packaging jsonschema-specifications referencing rpds-py attrs
+"C:/blp/bqnt/environments/bqnt-3/python.exe" -m pip install --target "${CLAUDE_PLUGIN_ROOT}/lib" --upgrade polars 2>&1
+```
+
+Then the rest with `--no-deps` to avoid conflicts with Bloomberg's managed packages (numpy, pandas, etc.).
+The list below includes ALL transitive dependencies — this was audited against fastmcp 3.1.x:
+
+```bash
+"C:/blp/bqnt/environments/bqnt-3/python.exe" -m pip install --target "${CLAUDE_PLUGIN_ROOT}/lib" --upgrade --no-deps fastmcp xbbg polars-bloomberg pydantic pydantic-core pydantic-settings anyio httpx httpx-sse httpcore sniffio certifi idna h11 starlette typing-extensions typing-inspection annotated-types uvicorn click jsonschema narwhals toolz jinja2 markupsafe packaging jsonschema-specifications referencing rpds-py attrs rich pygments mdurl markdown-it-py mcp openapi-pydantic jsonref jsonschema-path cyclopts authlib sse-starlette python-multipart pyjwt pyperclip watchfiles websockets exceptiongroup platformdirs uncalled-for beartype aiofile cachetools keyring py-key-value-aio pyyaml pywin32 pyarrow python-dotenv opentelemetry-api opentelemetry-sdk opentelemetry-semantic-conventions deprecated wrapt importlib-metadata zipp jaraco.classes jaraco.functools jaraco.context caio 2>&1
 ```
 
 **Why `--no-deps` with explicit packages?** We list transitive deps explicitly to avoid `--target` pulling packages that Bloomberg's Python already has (like `numpy`, `pandas`). This keeps `lib/` small and avoids version conflicts.
 
-If any package fails, retry without `--no-deps`:
+If you see pydantic/pydantic-core version mismatch errors in Step 3, fix with:
 ```bash
-"C:/blp/bqnt/environments/bqnt-3/python.exe" -m pip install --target "${CLAUDE_PLUGIN_ROOT}/lib" fastmcp xbbg polars-bloomberg polars pydantic altair
+"C:/blp/bqnt/environments/bqnt-3/python.exe" -c "import sys; sys.path.insert(0, '${CLAUDE_PLUGIN_ROOT}/lib'); from pydantic import __version__; print(__version__)"
+```
+Then check what pydantic-core version it requires and install that exact version:
+```bash
+"C:/blp/bqnt/environments/bqnt-3/python.exe" -m pip install --target "${CLAUDE_PLUGIN_ROOT}/lib" --upgrade --no-deps "pydantic-core==<REQUIRED_VERSION>"
 ```
 
 ## Step 3: Verify the lib/ Directory Works
@@ -58,6 +69,11 @@ import polars; print(f'polars: {polars.__version__}')
 import blpapi; print(f'blpapi: {blpapi.__version__} (from Bloomberg)')
 print('All dependencies verified.')
 "
+```
+
+If polars prints an empty version or warns about missing binary, re-run:
+```bash
+"C:/blp/bqnt/environments/bqnt-3/python.exe" -m pip install --target "${CLAUDE_PLUGIN_ROOT}/lib" --upgrade polars
 ```
 
 ## Step 4: Test Bloomberg API Connectivity
@@ -78,19 +94,34 @@ else:
 ## Step 5: Test the MCP Server
 
 ```bash
-timeout 5 "C:/blp/bqnt/environments/bqnt-3/python.exe" -c "
-import sys; sys.path.insert(0, '${CLAUDE_PLUGIN_ROOT}/lib'); sys.path.insert(0, '${CLAUDE_PLUGIN_ROOT}/server')
-from server import mcp
-print('MCP server loaded successfully with', len(mcp._tool_manager._tools), 'tools')
-" 2>&1 || true
+timeout 8 "C:/blp/bqnt/environments/bqnt-3/python.exe" "${CLAUDE_PLUGIN_ROOT}/server/run_server.py" 2>&1 || true
 ```
+
+If the server starts and prints "Starting MCP server 'Bloomberg' with transport 'stdio'", it is working correctly. The timeout will kill the process after 8 seconds (expected — the server normally runs forever).
+
+## Step 6: Claude Desktop Config (Optional)
+
+To also use this server in Claude Desktop, add to `%APPDATA%/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "bloomberg": {
+      "command": "C:/blp/bqnt/environments/bqnt-3/python.exe",
+      "args": ["C:/Users/<USERNAME>/.claude/plugins/cache/claude-skills-marketplace/bloomberg-mcp/1.0.0/server/run_server.py"]
+    }
+  }
+}
+```
+
+Replace `<USERNAME>` with your Windows username and adjust the plugin cache path if needed.
 
 ## Completion
 
 If all steps pass, report:
 
-> Bloomberg MCP server is ready! You now have access to 10 Bloomberg tools:
-> `bloomberg_status`, `bloomberg_bdp`, `bloomberg_bdh`, `bloomberg_bdib`, `bloomberg_bql`, `bloomberg_bql_build`, `bloomberg_bond_info`, `bloomberg_screen`, `bloomberg_field_search`, `bloomberg_chart`
+> Bloomberg MCP server is ready! You now have access to 9 Bloomberg tools:
+> `bloomberg_status`, `bloomberg_bdp`, `bloomberg_bdh`, `bloomberg_bdib`, `bloomberg_bql`, `bloomberg_bql_build`, `bloomberg_bond_info`, `bloomberg_screen`, `bloomberg_field_search`
 >
 > **Python**: `C:/blp/bqnt/environments/bqnt-3/python.exe` (Bloomberg BQuant)
 > **blpapi**: pre-installed by Bloomberg

@@ -2,10 +2,7 @@
   "mcpServers": {
     "bloomberg": {
       "command": "C:/blp/bqnt/environments/bqnt-3/python.exe",
-      "args": ["-m", "fastmcp", "run", "${CLAUDE_PLUGIN_ROOT}/server/server.py"],
-      "env": {
-        "PYTHONPATH": "${CLAUDE_PLUGIN_ROOT}/lib;${CLAUDE_PLUGIN_ROOT}/server"
-      }
+      "args": ["${CLAUDE_PLUGIN_ROOT}/server/run_server.py"]
     }
   }
 }

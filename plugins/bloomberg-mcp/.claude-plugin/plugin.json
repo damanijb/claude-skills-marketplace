@@ -1,7 +1,7 @@
 {
   "name": "bloomberg-mcp",
   "version": "1.0.0",
-  "description": "Bloomberg Terminal MCP server with auto-setup and BQL query skills. Provides 10 Bloomberg tools (BDP, BDH, BDIB, BQL, charting, screening, field search) plus guided query generation.",
+  "description": "Bloomberg Terminal MCP server with auto-setup and BQL query skills. Provides 9 Bloomberg tools (BDP, BDH, BDIB, BQL, screening, bond analytics, field search) plus guided query generation.",
   "author": {
     "name": "SBC Treasury",
     "email": "treasury@sbcounty.gov"
