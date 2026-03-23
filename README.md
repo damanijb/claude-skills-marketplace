@@ -32,6 +32,21 @@ End-to-end **investment credit analysis pipeline** with 8 coordinated skills.
 - **Infographic Generator** — nano-banana prompts for executive summary dashboards and risk assessment visuals
 - **Report Writer** — DOCX with SBC Treasury branding, formatting rules (banned language, number formatting, neutral tone), and section templates
 
+### bloomberg-mcp `v1.0.0`
+Bloomberg Terminal MCP server with **zero-config auto-setup**.
+
+- Bundles 10 MCP tools: BDP, BDH, BDIB, BQL, bond analytics, screening, field search, charting
+- Uses Bloomberg's BQuant Python (`C:/blp/bqnt/environments/bqnt-3/python.exe`) — `blpapi` pre-installed
+- Extra deps install to plugin-local `lib/` via `/bloomberg-setup` — no environment modification
+- Comprehensive BQL query generation skill with templates, syntax validation, and examples
+- Teammates: `claude plugins add` → `/bloomberg-setup` → done
+
+### bloomberg-bql `v1.0.0`
+Bloomberg Query Language reference and patterns for **polars-bloomberg** in Python.
+
+### bloomberg `v1.0.0`
+Comprehensive Bloomberg Python toolkit — BQL, factor analysis, visualization, portfolio construction.
+
 ## Installation
 
 Add this marketplace to Claude Code:

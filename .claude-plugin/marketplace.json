@@ -80,6 +80,14 @@
       "version": "1.0.0",
       "category": "security",
       "keywords": ["pii", "redaction", "security", "privacy", "treasury", "bank-statements", "compliance", "hooks", "government-finance"]
+    },
+    {
+      "name": "bloomberg-mcp",
+      "source": "./plugins/bloomberg-mcp",
+      "description": "Bloomberg Terminal MCP server with auto-setup. Bundles 10 tools (BDP, BDH, BDIB, BQL, charting, screening, field search, bond analytics) using Bloomberg's BQuant Python (blpapi pre-installed). Extra deps install to plugin-local lib/ via /bloomberg-setup. Includes comprehensive BQL query generation skill.",
+      "version": "1.0.0",
+      "category": "finance",
+      "keywords": ["bloomberg", "mcp", "bql", "terminal", "bdp", "bdh", "bonds", "equities", "charting", "screening", "bquant"]
     }
   ]
 }
