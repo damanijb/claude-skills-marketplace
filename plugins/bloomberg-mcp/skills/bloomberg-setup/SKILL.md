@@ -1,6 +1,6 @@
 ---
 name: bloomberg-setup
-description: Set up the Bloomberg MCP server — detect Bloomberg Terminal, install Python dependencies (blpapi, xbbg, polars-bloomberg, fastmcp), verify connectivity, and troubleshoot common issues. Use when Bloomberg tools are unavailable, after first plugin install, or when bloomberg_status returns errors.
+description: Set up the Bloomberg MCP server — uses Bloomberg's BQuant Python (blpapi pre-installed), installs extra deps to plugin-local lib/, verifies connectivity, and troubleshoots common issues. Use when Bloomberg tools are unavailable, after first plugin install, or when bloomberg_status returns errors.
 version: 1.0.0
 metadata:
   filePattern: "**/bloomberg*/**,**/mcp-bloomberg/**"
@@ -11,115 +11,83 @@ metadata:
 
 This skill guides first-time setup and troubleshooting of the Bloomberg MCP server.
 
+## Architecture
+
+The plugin uses **Bloomberg's own BQuant Python** (`C:/blp/bqnt/environments/bqnt-3/python.exe`) which ships with every Bloomberg Terminal installation. This Python already has `blpapi` installed.
+
+Extra dependencies (`fastmcp`, `xbbg`, `polars-bloomberg`, `polars`, `pydantic`, `altair`) are installed into a **plugin-local `lib/` directory** via `pip install --target`. This avoids modifying Bloomberg's managed environment and survives Bloomberg updates.
+
+The `.mcp.json` sets `PYTHONPATH` to include both `lib/` and `server/`:
+```json
+{
+  "command": "C:/blp/bqnt/environments/bqnt-3/python.exe",
+  "env": { "PYTHONPATH": "${CLAUDE_PLUGIN_ROOT}/lib;${CLAUDE_PLUGIN_ROOT}/server" }
+}
+```
+
 ## Prerequisites
 
-Before starting, the user's machine MUST have:
 1. **Bloomberg Terminal** installed and running (wintrv.exe visible in Task Manager)
-2. **Python 3.10+** available on PATH
-3. **C++ Build Tools** (required by blpapi) — Visual Studio Build Tools on Windows
+2. **BQuant environment** at `C:/blp/bqnt/environments/bqnt-3/` (standard Bloomberg install path)
 
-## Setup Steps
+That's it. No conda, no system Python, no C++ build tools needed.
 
-### Step 1: Check Bloomberg Terminal
+## Setup via Command
 
-Run this command to verify Bloomberg processes are running:
-
-```bash
-python -c "import psutil; bbg = [p.name() for p in psutil.process_iter(['name']) if p.info['name'] and p.info['name'].lower() in {'wintrv.exe','bbcomm.exe','bblauncher.exe','bbg.exe'}]; print(f'Bloomberg processes: {bbg}' if bbg else 'WARNING: No Bloomberg Terminal processes detected. Please start Bloomberg Terminal first.')"
-```
-
-If no processes found, tell the user to:
-- Open Bloomberg Terminal (WIN+R → `wintrv`)
-- Log in with their Bloomberg credentials
-- Wait for the terminal to fully load before proceeding
-
-### Step 2: Install Python Dependencies
-
-Install all required packages. The `blpapi` package requires the Bloomberg C++ SDK.
-
-```bash
-pip install fastmcp>=2.0.0 xbbg>=0.11.0 polars-bloomberg>=0.5.0 blpapi>=3.24.0 polars>=1.0.0 matplotlib>=3.8.0 altair>=5.0.0 psutil>=5.9.0 pydantic>=2.0.0
-```
-
-**If blpapi fails to install:**
-1. Download the Bloomberg C++ SDK from the Bloomberg SAPI website
-2. Set `BLPAPI_ROOT` environment variable to the SDK path
-3. Retry: `pip install blpapi`
-
-**Alternative for conda users:**
-```bash
-conda install -c conda-forge blpapi xbbg
-pip install fastmcp polars-bloomberg polars matplotlib altair psutil pydantic
-```
-
-### Step 3: Verify Connectivity
-
-Test that the Bloomberg API connection works:
-
-```bash
-python -c "from xbbg import blp; df = blp.bdp('IBM US Equity', 'PX_LAST'); print(f'SUCCESS: IBM last price = {df.iloc[0,0]}' if not df.empty else 'FAILED: Empty response')"
-```
-
-### Step 4: Test the MCP Server
-
-Start the server directly to verify it loads:
-
-```bash
-python -m fastmcp run ${CLAUDE_PLUGIN_ROOT}/server/server.py
-```
-
-If successful, you'll see the FastMCP startup message. Press Ctrl+C to stop.
+Run `/bloomberg-setup` for guided installation. The command:
+1. Verifies Bloomberg Terminal is running
+2. Installs extra deps to `${CLAUDE_PLUGIN_ROOT}/lib/`
+3. Tests API connectivity
+4. Tests MCP server loads
 
 ## Troubleshooting
 
+### BQuant Python not found at expected path
+- Check `C:/blp/bqnt/environments/` for available versions (bqnt-2, bqnt-3, etc.)
+- If a different version exists, update `.mcp.json` command to match
+- If no BQuant environment exists, Bloomberg Terminal may need the BQuant feature enabled
+
 ### "blpapi not found" or import errors
-- Ensure Bloomberg Terminal is running BEFORE importing blpapi
-- The Terminal must be logged in (not just the splash screen)
-- Try: `python -c "import blpapi; print(blpapi.__version__)"`
+- BQuant Python should already have blpapi — verify: `"C:/blp/bqnt/environments/bqnt-3/python.exe" -c "import blpapi; print(blpapi.__version__)"`
+- If missing, Bloomberg Terminal installation may be incomplete
+
+### "No module named 'fastmcp'" when MCP server starts
+- The `lib/` directory hasn't been populated yet — run `/bloomberg-setup`
+- Or manually: `"C:/blp/bqnt/environments/bqnt-3/python.exe" -m pip install --target "${CLAUDE_PLUGIN_ROOT}/lib" fastmcp xbbg polars-bloomberg polars pydantic altair`
 
 ### "Connection refused" or timeout errors
-- Bloomberg Terminal must be on the SAME machine (remote connections need B-PIPE)
+- Bloomberg Terminal must be on the SAME machine (remote needs B-PIPE)
 - Check firewall isn't blocking localhost:8194
 - Restart Bloomberg Terminal and try again
 
 ### "lifespan_context" error in Claude Desktop
-- This means the MCP server crashed during startup
-- Fully quit Claude Desktop (system tray → Exit)
-- Restart Claude Desktop
-- The MCP server will re-initialize on first tool call
+- MCP server crashed during startup — fully quit and restart Claude Desktop
+- The server re-initializes on first tool call
 
 ### Server starts but tools return empty data
-- Verify your Bloomberg subscription includes the data you're requesting
-- Some fields require specific entitlements (e.g., real-time vs delayed)
-- Try a simple test: `bloomberg_bdp(securities=["IBM US Equity"], fields=["PX_LAST"])`
+- Verify your Bloomberg subscription covers the requested data
+- Some fields require specific entitlements (real-time vs delayed)
+- Test: `bloomberg_bdp(securities=["IBM US Equity"], fields=["PX_LAST"])`
 
-### conda environment issues
-- Run `python ${CLAUDE_PLUGIN_ROOT}/scripts/detect-python.py` to find all available environments
-- The `/bloomberg-setup` command auto-detects conda and patches `.mcp.json` with the correct Python path
-- If auto-detection picked the wrong env, edit `.mcp.json` manually:
-  ```json
-  "command": "C:/Users/you/.conda/envs/bloomberg/python.exe"
-  ```
-- To create a dedicated environment:
+### Version conflicts between lib/ and Bloomberg's packages
+- If you see import errors after setup, clear and reinstall:
   ```bash
-  conda create -n bloomberg python=3.11 -y
-  conda activate bloomberg
-  conda install -c conda-forge blpapi xbbg -y
-  pip install fastmcp polars-bloomberg polars matplotlib altair psutil pydantic
+  rm -rf "${CLAUDE_PLUGIN_ROOT}/lib"
+  /bloomberg-setup
   ```
-
-### .mcp.json shows "python" but wrong Python runs
-- This happens when the system `python` points to a different environment
-- Fix: run `/bloomberg-setup` — it detects the right Python and patches `.mcp.json`
-- Or manually set the full path in `.mcp.json` → `"command": "/full/path/to/python"`
+- The `--no-deps` install strategy prevents most conflicts
 
 ## For Team Distribution
 
 When sharing this plugin with teammates:
 
-1. They clone the repo: `git clone <repo-url>`
-2. They install the plugin: `claude plugins add ./BloombergMCP`
-3. They run `/bloomberg-setup` to install dependencies
+1. They clone the marketplace repo (or just the `bloomberg-mcp` plugin directory)
+2. They install the plugin: `claude plugins add ./plugins/bloomberg-mcp`
+3. They run `/bloomberg-setup` to install extra deps to `lib/`
 4. They restart Claude Code — Bloomberg tools are ready
 
-No manual config editing required. The `.mcp.json` handles server registration automatically.
+**Why this works on any Bloomberg machine:**
+- `C:/blp/bqnt/environments/bqnt-3/python.exe` is the same path on every Bloomberg Terminal
+- `blpapi` is pre-installed by Bloomberg — no pip/conda install needed
+- Extra deps go to a plugin-local directory — no environment configuration
+- `.mcp.json` uses `${CLAUDE_PLUGIN_ROOT}` for portable paths
