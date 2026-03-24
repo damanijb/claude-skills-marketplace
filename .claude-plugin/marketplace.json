@@ -26,20 +26,12 @@
       "keywords": ["credit-analysis", "investment-research", "financial-modeling", "excel", "docx", "d3-charts", "infographics", "chrome-automation", "bank-analysis", "credit-scoring"]
     },
     {
-      "name": "bloomberg-bql",
-      "source": "./plugins/bloomberg-bql",
-      "description": "Bloomberg Query Language (BQL) skill for retrieving financial data across equities, fixed income, portfolios, funds, CDS, and MBS using polars-bloomberg (BQuery) in Python. Covers BQL syntax, universe functions, data items, screening, time series, grouping, and custom analytics.",
-      "version": "1.0.0",
-      "category": "finance",
-      "keywords": ["bloomberg", "bql", "finance", "equity", "fixed-income", "polars"]
-    },
-    {
       "name": "bloomberg",
       "source": "./plugins/bloomberg",
-      "description": "Comprehensive Bloomberg Python toolkit — BQL data retrieval, factor analysis, visualization, and portfolio construction using polars-bloomberg, bql, bqfactor, bqviz, and bqapi in the bqnt-3 conda environment.",
+      "description": "Bloomberg Terminal data via MCP + BQL. Node.js MCP server with bql_query and bql_examples tools, backed by bqnt-3 Python (bql.Service). Includes comprehensive BQL skill with 16 verified reference files and 27 test queries. Covers equity, fixed income, credit, CDS, curves, funds, and returns.",
       "version": "1.0.0",
       "category": "finance",
-      "keywords": ["bloomberg", "bql", "bqfactor", "bqviz", "bqapi", "finance", "equity", "fixed-income", "factor-analysis", "portfolio", "polars"]
+      "keywords": ["bloomberg", "bql", "mcp", "terminal", "equities", "bonds", "fixed-income", "credit", "cds", "curves", "funds", "returns"]
     },
     {
       "name": "charting-skill",
@@ -82,12 +74,12 @@
       "keywords": ["pii", "redaction", "security", "privacy", "treasury", "bank-statements", "compliance", "hooks", "government-finance"]
     },
     {
-      "name": "bloomberg-mcp",
-      "source": "./plugins/bloomberg-mcp",
-      "description": "Bloomberg Terminal MCP server with auto-setup. Bundles 10 tools (BDP, BDH, BDIB, BQL, charting, screening, field search, bond analytics) using Bloomberg's BQuant Python (blpapi pre-installed). Extra deps install to plugin-local lib/ via /bloomberg-setup. Includes comprehensive BQL query generation skill.",
+      "name": "samaritan-memory",
+      "source": "./plugins/samaritan-memory",
+      "description": "Persistent memory system with automatic context injection via session hooks.",
       "version": "1.0.0",
-      "category": "finance",
-      "keywords": ["bloomberg", "mcp", "bql", "terminal", "bdp", "bdh", "bonds", "equities", "charting", "screening", "bquant"]
+      "category": "productivity",
+      "keywords": ["memory", "context", "persistence", "hooks"]
     }
   ]
 }

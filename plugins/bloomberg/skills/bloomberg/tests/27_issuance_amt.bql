@@ -1,0 +1,2 @@
+# Test: amount outstanding for issuer debt
+get(name, amt_outstanding, issue_dt, maturity) for(bonds('AAPL US Equity'))

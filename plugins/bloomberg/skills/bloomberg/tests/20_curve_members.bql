@@ -1,0 +1,2 @@
+# Test: US Treasury curve members
+get(id) for(curveMembers(['YCGT0025 Index']))

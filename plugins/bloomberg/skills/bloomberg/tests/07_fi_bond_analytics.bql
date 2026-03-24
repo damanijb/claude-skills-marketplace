@@ -1,0 +1,4 @@
+# Test: bond yield, duration, spread with correct parameter names
+# yield_type, duration_type, spread_type — NOT just 'type'
+get(name, cpn, maturity, yield(yield_type=YTW), duration(duration_type=modified), spread(spread_type=OAS))
+for('EH469710 Corp')

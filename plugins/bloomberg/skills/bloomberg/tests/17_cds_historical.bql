@@ -1,0 +1,2 @@
+# Test: historical CDS spread
+get(cds_spread(dates=range(-30D,0D))) for(cds('JPM US Equity', tenor=5Y))

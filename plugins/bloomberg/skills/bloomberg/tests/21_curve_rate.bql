@@ -1,0 +1,2 @@
+# Test: curve rate at a tenor
+get(id().tenor, rate(side=Mid).value) for(curveMembers(['YCGT0025 Index'], tenors='5Y'))

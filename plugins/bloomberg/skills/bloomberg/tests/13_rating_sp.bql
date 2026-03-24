@@ -1,0 +1,2 @@
+# Test: S&P rating for a bond
+get(rating(source=SP)) for('EH469710 Corp')

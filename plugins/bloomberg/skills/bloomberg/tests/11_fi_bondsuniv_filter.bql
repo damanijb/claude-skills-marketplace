@@ -1,0 +1,4 @@
+# Test: bondsuniv filter — use index members instead of full universe for speed
+# bondsuniv(Active) with filter+rating is too slow; use an IG index instead
+get(name, yield(yield_type=YTW), rating(source=SP))
+for(top(members('LUACTRUU Index'), 5, yield(yield_type=YTW)))

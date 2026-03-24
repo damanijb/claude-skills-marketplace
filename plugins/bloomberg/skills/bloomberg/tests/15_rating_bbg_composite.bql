@@ -1,0 +1,2 @@
+# Test: Bloomberg composite rating
+get(rating(source=BBG)) for('EH469710 Corp')

@@ -1,0 +1,2 @@
+# Test: peer universe function — use peers() directly without top(), it returns limited set
+get(name, px_last, pe_ratio) for(peers('AAPL US Equity'))

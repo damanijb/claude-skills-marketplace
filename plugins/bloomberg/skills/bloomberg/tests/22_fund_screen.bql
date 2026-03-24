@@ -1,0 +1,3 @@
+# Test: fund universe — use count to verify fundsUniv works without heavy sorting
+get(count(group(id, fund_typ)))
+for(fundsUniv(['Primary','Active']))

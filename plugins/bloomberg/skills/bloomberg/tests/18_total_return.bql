@@ -1,0 +1,2 @@
+# Test: total return for equity
+get(total_return(calc_interval=range(-1M,0D))) for('AAPL US Equity')

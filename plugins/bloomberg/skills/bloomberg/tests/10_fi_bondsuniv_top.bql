@@ -1,0 +1,2 @@
+# Test: bondsuniv(Active) — must be lowercase, no named params
+get(name, cpn, maturity) for(top(bondsuniv(Active), 5, cpn))

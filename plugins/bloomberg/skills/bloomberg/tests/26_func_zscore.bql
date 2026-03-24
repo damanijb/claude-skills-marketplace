@@ -1,0 +1,2 @@
+# Test: zscore ranking
+get(name, pe_ratio, groupzscore(pe_ratio)) for(members('INDU Index'))

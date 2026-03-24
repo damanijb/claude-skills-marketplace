@@ -32,20 +32,15 @@ End-to-end **investment credit analysis pipeline** with 8 coordinated skills.
 - **Infographic Generator** — nano-banana prompts for executive summary dashboards and risk assessment visuals
 - **Report Writer** — DOCX with SBC Treasury branding, formatting rules (banned language, number formatting, neutral tone), and section templates
 
-### bloomberg-mcp `v1.0.0`
-Bloomberg Terminal MCP server with **zero-config auto-setup**.
-
-- Bundles 10 MCP tools: BDP, BDH, BDIB, BQL, bond analytics, screening, field search, charting
-- Uses Bloomberg's BQuant Python (`C:/blp/bqnt/environments/bqnt-3/python.exe`) — `blpapi` pre-installed
-- Extra deps install to plugin-local `lib/` via `/bloomberg-setup` — no environment modification
-- Comprehensive BQL query generation skill with templates, syntax validation, and examples
-- Teammates: `claude plugins add` → `/bloomberg-setup` → done
-
-### bloomberg-bql `v1.0.0`
-Bloomberg Query Language reference and patterns for **polars-bloomberg** in Python.
-
 ### bloomberg `v1.0.0`
-Comprehensive Bloomberg Python toolkit — BQL, factor analysis, visualization, portfolio construction.
+Bloomberg Terminal data via **MCP + BQL** — query any Bloomberg data from Claude Code.
+
+- MCP server with `bql_query` and `bql_examples` tools — Claude calls Bloomberg directly
+- Uses Bloomberg's standard bqnt-3 Python (`C:\blp\bqnt\environments\bqnt-3\python.exe`) — zero setup
+- Comprehensive BQL skill with 16 verified reference files (equity, FI, credit, CDS, curves, funds, returns)
+- 27 verified test queries (100% pass rate against live Bloomberg)
+- Correct BQL syntax baked into tool descriptions and error hints — prevents common mistakes
+- Just ask: "get AAPL's price", "screen AA-rated bonds", "show the Treasury curve"
 
 ## Installation
 

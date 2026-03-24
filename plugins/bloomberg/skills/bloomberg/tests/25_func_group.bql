@@ -1,0 +1,2 @@
+# Test: group aggregation
+get(groupavg(pe_ratio, gics_sector_name)) for(members('INDU Index'))

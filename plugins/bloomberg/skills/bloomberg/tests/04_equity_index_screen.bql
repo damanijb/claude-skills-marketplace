@@ -1,0 +1,2 @@
+# Test: index members with filter
+get(name, px_last, pe_ratio) for(top(members('INDU Index'), 5, cur_mkt_cap))

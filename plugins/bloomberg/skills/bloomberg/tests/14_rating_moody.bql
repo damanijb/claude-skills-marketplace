@@ -1,0 +1,2 @@
+# Test: Moody's rating
+get(rating(source=MOODY)) for('EH469710 Corp')

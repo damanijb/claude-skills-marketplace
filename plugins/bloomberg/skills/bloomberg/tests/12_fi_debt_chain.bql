@@ -1,0 +1,2 @@
+# Test: issuer debt chain
+get(name, cpn, maturity) for(bonds('AAPL US Equity'))

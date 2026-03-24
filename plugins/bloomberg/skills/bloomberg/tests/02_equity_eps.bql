@@ -1,0 +1,2 @@
+# Test: EPS with period parameters
+get(is_eps(fa_period_type=A, fa_period_offset=0)) for('IBM US Equity')

@@ -1,0 +1,3 @@
+# Test: different yield types
+get(yield(yield_type=YTW), yield(yield_type=YTM))
+for('EH469710 Corp')

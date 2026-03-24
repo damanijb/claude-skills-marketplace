@@ -1,0 +1,2 @@
+# Test: aggregate function on historical data
+get(avg(dropna(pe_ratio(dates=range(-1Y,0D), fa_period_type=LTM)))) for('AAPL US Equity')

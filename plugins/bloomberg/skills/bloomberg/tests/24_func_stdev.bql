@@ -1,0 +1,2 @@
+# Test: standard deviation
+get(std(day_to_day_total_return(dates=range(-1Y,0D)))) for('AAPL US Equity')

@@ -1,0 +1,2 @@
+# Test: avg function
+get(avg(px_last(dates=range(-3M,0D)))) for('AAPL US Equity')

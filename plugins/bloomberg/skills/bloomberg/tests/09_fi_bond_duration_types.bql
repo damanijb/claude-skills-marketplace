@@ -1,0 +1,3 @@
+# Test: different duration types
+get(duration(duration_type=spread), duration(duration_type=modified), duration(duration_type=macaulay))
+for('EH469710 Corp')

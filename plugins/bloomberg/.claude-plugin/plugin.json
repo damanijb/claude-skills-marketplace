@@ -1,10 +1,16 @@
 {
   "name": "bloomberg",
+  "displayName": "Bloomberg",
+  "description": "Query Bloomberg market data using BQL. Provides tools to run any BQL query and verified reference docs for correct syntax.",
   "version": "1.0.0",
-  "description": "Comprehensive Bloomberg Python toolkit — BQL data retrieval, factor analysis, visualization, and portfolio construction using polars-bloomberg, bql, bqfactor, bqviz, and bqapi in the bqnt-3 conda environment.",
-  "author": {
-    "name": "damanijb",
-    "url": "https://github.com/damanijb"
-  },
-  "keywords": ["bloomberg", "bql", "bqfactor", "bqviz", "bqapi", "finance", "equity", "fixed-income", "factor-analysis", "portfolio", "polars"]
+  "mcpServers": {
+    "bloomberg": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/mcp/index.js"],
+      "env": {
+        "BLOOMBERG_PYTHON": "C:\\blp\\bqnt\\environments\\bqnt-3\\python.exe"
+      }
+    }
+  }
 }

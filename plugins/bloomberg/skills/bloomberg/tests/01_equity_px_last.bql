@@ -1,0 +1,2 @@
+# Test: basic equity price
+get(px_last) for('AAPL US Equity')

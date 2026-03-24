@@ -1,0 +1,2 @@
+# Test: historical price series
+get(px_last(dates=range(-5D,0D))) for('AAPL US Equity')

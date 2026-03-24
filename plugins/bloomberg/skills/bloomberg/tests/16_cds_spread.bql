@@ -1,0 +1,2 @@
+# Test: CDS spread for a name
+get(cds_spread) for(cds('JPM US Equity', tenor=5Y))

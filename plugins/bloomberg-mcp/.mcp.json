@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "bloomberg": {
-      "command": "C:/blp/bqnt/environments/bqnt-3/python.exe",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/server/run_server.py"]
-    }
-  }
-}
