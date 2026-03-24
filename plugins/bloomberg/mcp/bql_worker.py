@@ -29,12 +29,21 @@ def run_query(query: str) -> list[dict]:
     if isinstance(df.index, pd.MultiIndex) or df.index.name:
         df = df.reset_index()
 
-    # Collapse duplicate rows from combined_df
-    if "ID" in df.columns and len(df) > 0:
-        data_cols = [c for c in df.columns if c != "ID"]
-        collapsed = df.groupby("ID", sort=False)[data_cols].first().reset_index()
-        if len(collapsed) < len(df):
-            df = collapsed
+    # Collapse duplicate rows from combined_df's per-field expansion.
+    # combined_df creates separate rows per field (name gets one row, px_last another)
+    # with NaT in DATE for non-price fields. Only collapse when this pattern is detected.
+    # Do NOT collapse time-series data (where DATE varies across rows for the same ID).
+    if "ID" in df.columns and "DATE" in df.columns and len(df) > 0:
+        n_unique_ids = df["ID"].nunique()
+        n_unique_dates = df["DATE"].nunique()
+        has_nat_dates = df["DATE"].isna().any()
+        # Only collapse if: many rows per ID AND dates are mostly NaT (per-field expansion)
+        # Skip if: dates are mostly populated (time-series data)
+        if has_nat_dates and n_unique_dates <= 2 and len(df) > n_unique_ids:
+            data_cols = [c for c in df.columns if c != "ID"]
+            collapsed = df.groupby("ID", sort=False)[data_cols].first().reset_index()
+            if len(collapsed) < len(df):
+                df = collapsed
 
     return json.loads(df.to_json(orient="records", date_format="iso", default_handler=str))
 
