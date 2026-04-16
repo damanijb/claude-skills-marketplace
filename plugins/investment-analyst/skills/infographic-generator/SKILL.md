@@ -1,6 +1,7 @@
 ---
 name: infographic-generator
 description: This skill should be used when the user asks to "create infographic", "generate infographic", "visual summary", "nano-banana infographic", "executive summary visual", "risk dashboard image", "create visual for report", or needs to generate AI-powered infographic images for embedding in financial reports using nano-banana.
+version: 1.0.0
 ---
 
 # Infographic Generator
@@ -9,7 +10,7 @@ Generate nano-banana infographic images for visual summaries in financial report
 
 ## Prerequisites
 
-- `nano-banana` skill must be available
+- `nano-banana` CLI must be installed. Install via: `pip install nano-banana --break-system-packages`
 - Research synthesis data from `{workspace}/data/research-synthesis.json`
 - Financial model data from `{workspace}/model/`
 - Reference images from prior reports (optional, for style consistency)
@@ -95,10 +96,12 @@ After generation, verify:
 
 ## Reference Images
 
-If prior infographics exist for style consistency:
-- `/Users/djb/Desktop/EU Banks Write Up/infographics/01_executive_summary.png`
-- `/Users/djb/Desktop/EU Banks Write Up/infographics/02_risk_thesis_tracker.png`
+If prior infographics exist for style consistency, pass one using the `-r` flag:
+```bash
+nano-banana "{prompt}" -s 2K -a 16:9 -r "{path/to/prior-infographic.png}" -o {name} -d {workspace}/infographics
+```
 
-Use these with the `-r` flag to maintain visual consistency across reports.
+Look for prior infographics in `T:/Data/Shared/Credit analysis/Quarterly Tearsheets/{YEAR}/{QQ}{YY}/`
+or the issuer's most recent quarterly archive folder.
 
 For detailed prompt templates for additional infographic types, load `references/infographic-prompts.md`.

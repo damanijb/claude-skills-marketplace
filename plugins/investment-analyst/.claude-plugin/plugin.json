@@ -1,8 +1,15 @@
 {
   "name": "investment-analyst",
-  "description": "End-to-end investment credit analysis pipeline. Automates research provider access (JPM, CapitalIQ, Fitch, CreditSights, Morgan Stanley), document collection, fundamental research with FRED macro data, 7-sheet Excel financial models with credit scoring, D3 charts, nano-banana infographics, and DOCX report generation with SBC Treasury branding.",
+  "version": "1.1.0",
+  "description": "End-to-end investment credit analysis pipeline for SBC Treasury. /company-analysis collects earnings sources (press release, supplement, 10-Q/10-K/20-F, transcript) in parallel via source-collector agents and produces a cited docx writeup via the analysis-writer agent using local PDF extraction (pymupdf4llm). /tearsheet injects the resulting writeup into Excel templates via COM and archives PDFs. /credit-report produces CreditSights-style HTML/DOCX reports with FRED macro context, D3 charts, and rating-anchored recommendations.",
   "author": {
-    "name": "damanijb",
-    "url": "https://github.com/damanijb"
+    "name": "San Bernardino County Auditor-Controller-Treasurer",
+    "email": "Damani.Brown@sbcountyatc.gov"
+  },
+  "mcpServers": {
+    "desktop-commander": {
+      "command": "npx",
+      "args": ["-y", "@wonderwhy-er/desktop-commander@latest"]
+    }
   }
 }

@@ -1,6 +1,7 @@
 ---
 name: financial-model
 description: This skill should be used when the user asks to "build financial model", "create Excel workbook", "credit scoring model", "pro forma estimates", "financial spreadsheet", "liquidity analysis", "ROE decomposition", "peer comparison spreadsheet", "WACC calculation", "credit rating scorecard", "build a bank model", or needs to create a structured Excel workbook with historical financial data, forward estimates, credit scoring, and peer benchmarking.
+version: 1.0.0
 ---
 
 # Financial Model Builder

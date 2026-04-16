@@ -1,6 +1,7 @@
 ---
 name: fundamental-research
 description: This skill should be used when the user asks to "research management", "analyze peers", "assess operating environment", "identify key drivers", "country economic health analysis", "fundamental research", "credit assessment", "macro analysis for banks", "management quality review", "peer comparison research", or needs to synthesize collected data into a structured research narrative covering management, competitive positioning, macro environment, and business drivers.
+version: 1.0.0
 ---
 
 # Fundamental Research

@@ -1,6 +1,7 @@
 ---
 name: outlook-email
 description: "Pull emails from local Microsoft Outlook via Windows COM automation. Use this skill when the user asks to read emails, check Outlook, get messages from a folder, search mail, find emails from a sender, pull recent correspondence, check sent items, or any task involving retrieving email content from their local Outlook client. Also trigger when the user references Outlook folders like Inbox, Sent Items, or custom subfolder names (e.g., 'Earnings Analysis', 'Credit Research') in the context of retrieving information. This skill returns raw plain-text email content for Claude to work with."
+version: 1.0.0
 ---
 
 # Outlook Email Retrieval
